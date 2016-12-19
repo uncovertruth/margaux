@@ -1,0 +1,7 @@
+{
+  "name": "margaux",
+  "NODE_ENV": "production",
+  "script": "bin/www",
+  "exec_mode": "cluster_mode",
+  "instances": 0
+}

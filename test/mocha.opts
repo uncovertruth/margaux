@@ -1,0 +1,3 @@
+--timeout 9000
+--recursive
+--require intelli-espower-loader
