@@ -1,7 +1,6 @@
 # margaux
 
 [![Build Status][travis-image]][travis-url] [![Build Status][circleci-image]][circleci-url] [![codecov][codecov-image]][codecov-url] [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
-
 > create webpage snapshot
 
 TODO: Fill out this long description.
@@ -24,6 +23,7 @@ npm install
 ### Start
 
 ```sh
+# localhost
 npm run serve &
 npm start
 ```
@@ -54,9 +54,9 @@ Small note: If editing the README, please conform to the [standard-readme](https
 
 MIT © UNCOVER TRUTH Inc.
 
-[travis-image]:
-[travis-url]:
-[circleci-image]:
-[circleci-url]:
-[codecov-image]: https://codecov.io/gh/uncovertruth/margaux/branch/master/graph/badge.svg?token=S3wmpefriD
+[travis-image]: https://travis-ci.org/uncovertruth/margaux.svg?branch=master
+[travis-url]: https://travis-ci.org/uncovertruth/margaux
+[circleci-image]: https://circleci.com/gh/uncovertruth/margaux/tree/master.svg?style=svg&circle-token=c9c9ff761c704d908a035eea8a0d7d5487b868f9
+[circleci-url]: https://circleci.com/gh/uncovertruth/margaux/tree/master
+[codecov-image]: https://codecov.io/gh/uncovertruth/margaux/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/uncovertruth/margaux
