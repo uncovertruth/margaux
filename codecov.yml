@@ -1,5 +1,6 @@
 codecov:
   bot: userdivebot
+  token: 06a832b7-2139-4b4f-a9c9-cf7d6292b997
 
 coverage:
   precision: 2
