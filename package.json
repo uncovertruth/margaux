@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "body-parser": "^1.15.2",
-    "chrome-remote-interface": "^0.15.1",
+    "chrome-remote-interface": "^0.17.0",
     "cluster": "^0.7.7",
     "co": "^4.6.0",
     "commander": "^2.9.0",
@@ -36,7 +36,7 @@
     "npm-run-all": "^3.1.1",
     "power-assert": "^1.4.1",
     "remove": "^0.1.5",
-    "superagent": "^2.3.0",
+    "superagent": "^3.3.1",
     "supertest": "^2.0.1"
   },
   "directories": {
