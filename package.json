@@ -36,7 +36,7 @@
     "npm-run-all": "^4.0.0",
     "power-assert": "^1.4.1",
     "remove": "^0.1.5",
-    "superagent": "^2.3.0",
+    "superagent": "^3.3.2",
     "supertest": "^2.0.1"
   },
   "directories": {
