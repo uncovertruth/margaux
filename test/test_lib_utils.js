@@ -1,10 +1,10 @@
-'use strict'
-
-const assert = require('power-assert')
-const request = require('superagent')
-const utils = require('../lib/utils')
+/* @flow */
+import { describe, it } from 'mocha'
+import assert from 'assert'
+import request from 'superagent'
 
 describe('utils.createTmpServer', () => {
+  const utils = require('../lib/utils')
   const html = '<html><head></head><body>hello</body></html>'
 
   it('return server', (done) => {
