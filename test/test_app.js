@@ -1,13 +1,12 @@
-'use strict'
-
-const assert = require('power-assert')
-const request = require('supertest')
-const http = require('http')
-
-const utils = require('../lib/utils')
-const app = require('../app')
+/* @flow */
+import { describe, it, before } from 'mocha'
+import assert from 'assert'
+import request from 'supertest'
+import http from 'http'
 
 describe('POST /', function () {
+  const utils = require('../lib/utils')
+  const app = require('../app')
   const testHtml = '<!DOCTYPE html><html><body><head></head></body></html>'
 
   before(function (done) {

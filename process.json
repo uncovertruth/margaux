@@ -1,7 +1,7 @@
 {
   "name": "margaux",
   "NODE_ENV": "production",
-  "script": "bin/www",
+  "script": "bin/www.js",
   "exec_mode": "cluster_mode",
   "instances": 0
 }

@@ -1,7 +1,7 @@
 module.exports = {
-  'extends': ['@uncovertruth/eslint-config'],
+  'extends': ['@uncovertruth/eslint-config-flowtype'],
   'rules': {
-    'no-console': 1,
+    'no-console': 0,
     'no-new': 1
   }
 }

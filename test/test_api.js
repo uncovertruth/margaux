@@ -1,15 +1,15 @@
-'use strict'
-
-const assert = require('power-assert')
-const http = require('http')
-const fs = require('fs')
-const path = require('path')
-const remove = require('remove')
-
-const utils = require('../lib/utils')
-const api = require('../api')
+/* @flow */
+import { describe, it, before, after } from 'mocha'
+import assert from 'assert'
+import http from 'http'
+import fs from 'fs'
+import path from 'path'
+import remove from 'remove'
 
 describe('api', function () {
+  const utils = require('../lib/utils')
+  const api = require('../api')
+
   let testUrlHost
   const testUrlWithoutViewport = '/'
   const testHtmlWitouthViewport = '<!DOCTYPE html><html><head></head><body></body></html>'

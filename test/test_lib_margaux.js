@@ -1,22 +1,22 @@
-'use strict'
-
-const _ = require('lodash')
-const assert = require('power-assert')
-const co = require('co')
-const promisify = require('es6-promisify')
-
-const utils = require('../lib/utils')
-const margaux = require('../lib/margaux')
-
-const createTmpServer = promisify(utils.createTmpServer)
-const create = promisify(margaux.create)
-const navigate = promisify(margaux.navigate)
-const deleteCookie = promisify(margaux.deleteCookie)
-const setCookie = promisify(margaux.setCookie)
-const getCookies = promisify(margaux.getCookies)
-const getOuterHTML = promisify(margaux.getOuterHTML)
+/* @flow */
+import { describe, it } from 'mocha'
+import _ from 'lodash'
+import assert from 'assert'
+import co from 'co'
+import promisify from 'es6-promisify'
 
 describe('lib/margaux', () => {
+  const utils = require('../lib/utils')
+  const margaux = require('../lib/margaux')
+
+  const createTmpServer = promisify(utils.createTmpServer)
+  const create = promisify(margaux.create)
+  const navigate = promisify(margaux.navigate)
+  const deleteCookie = promisify(margaux.deleteCookie)
+  const setCookie = promisify(margaux.setCookie)
+  const getCookies = promisify(margaux.getCookies)
+  const getOuterHTML = promisify(margaux.getOuterHTML)
+
   it('evaluate', function (done) {
     margaux.create('localhost', 9223, (err, chrome) => {
       assert(err === null)
