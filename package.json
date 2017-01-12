@@ -60,7 +60,7 @@
   },
   "scripts": {
     "codecov": "codecov -f ./coverage/lcov.info",
-    "dev": "NODE_ENV=development supervisor ./bin/www",
+    "dev": "NODE_ENV=development supervisor ./bin/www.js",
     "lint": "npm-run-all -p lint:*",
     "lint:es": "eslint .",
     "lint:flow": "flow",
