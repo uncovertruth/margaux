@@ -19,6 +19,7 @@ const setUserAgentOverride = promisify(margaux.setUserAgentOverride)
 const setHeaders = promisify(margaux.setHeaders)
 const navigate = promisify(margaux.navigate)
 const extractViewport = promisify(margaux.extractViewport)
+const forceCharset = promisify(margaux.forceCharset)
 const setCookie = promisify(margaux.setCookie)
 const convertLinkToAbsolutely = promisify(margaux.convertLinkToAbsolutely)
 const removeScripts = promisify(margaux.removeScripts)
@@ -143,6 +144,7 @@ Api.prototype.takeWebSnapshot = function (url, params, storeBaseDir, callback) {
     // get html and close chrome tab
     yield removeScripts(chrome)
     yield emptyIframes(chrome)
+    yield forceCharset(chrome)
     const html = yield getOuterHTML(chrome)
     yield close(chrome)
 

@@ -37,6 +37,41 @@ describe('api', function () {
     <body>a</body>
   </html>
   `
+
+  const testUrlWithMetaContentCharsetShiftJIS = '/with-meta-shiftjis/'
+  const testHtmlWithMetaContentCharsetShiftJIS = `
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ja" xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+  <meta http-equiv="content-Type" content="text/html; charset=Shift_JIS">
+  <meta http-equiv="content-Style-Type" content="text/css">
+  <meta http-equiv="content-Script-Type" content="text/javascript">
+  <title>ShiftJIS Content</title>
+  <meta name="keywords" content="fake charset=ShiftJIS">
+  <meta name="copyright" content="UT INC.">
+  <meta name="robots" content="noodp">
+  <meta property="og:title" content="2017">
+  <meta property="og:description" content="">
+  <meta property="og:type" content="website">
+</head><body></body></html>
+`
+
+  const testUrlWithMetaCharsetShiftJIS = '/with-charset-shiftjis/'
+  const testHtmlWithMetaCharsetShiftJIS = `
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ja" xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+  <title>ShiftJIS Content</title>
+  <meta charset="ShiftJIS">
+  <meta name="keywords" content="fake charset=ShiftJIS">
+  <meta name="copyright" content="UT INC.">
+  <meta name="robots" content="noodp">
+  <meta property="og:title" content="2017">
+  <meta property="og:description" content="">
+  <meta property="og:type" content="website">
+</head><body></body></html>
+`
+
   const TEST_STORE_DIR = '/tmp/_margaux/_margaux_test'
 
   before(function (done) {
@@ -54,6 +89,12 @@ describe('api', function () {
             break
           case testUrlWithJSViewport:
             res.end(testHtmlWithJSViewport)
+            break
+          case testUrlWithMetaContentCharsetShiftJIS:
+            res.end(testHtmlWithMetaContentCharsetShiftJIS)
+            break
+          case testUrlWithMetaCharsetShiftJIS:
+            res.end(testHtmlWithMetaCharsetShiftJIS)
             break
           default:
             res.end('')
@@ -103,6 +144,38 @@ describe('api', function () {
         assert(url.length > 0)
         assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
         assert.equal(viewport, 'width=device-width,initial-scale=1.0')
+        done()
+      })
+  })
+
+  it('returns html with meta content charset ShiftJIS', function (done) {
+    api.takeWebSnapshot(testUrlHost + testUrlWithMetaContentCharsetShiftJIS, {},
+      TEST_STORE_DIR, function (err, url, viewport) {
+        if (err) {
+          assert(err === null)
+          throw err
+        }
+        assert(url.length > 0)
+        assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
+        const tmpBuf = fs.readFileSync(`${path.join(TEST_STORE_DIR, url)}`).toString()
+        assert(tmpBuf.match('<meta name="keywords" content="fake charset=ShiftJIS">'))
+        assert(tmpBuf.match('<meta http-equiv="content-Type" content="text/html; charset=UTF-8">'))
+        done()
+      })
+  })
+
+  it('returns html with meta charset ShiftJIS', function (done) {
+    api.takeWebSnapshot(testUrlHost + testUrlWithMetaCharsetShiftJIS, {},
+      TEST_STORE_DIR, function (err, url, viewport) {
+        if (err) {
+          assert(err === null)
+          throw err
+        }
+        assert(url.length > 0)
+        assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
+        const tmpBuf = fs.readFileSync(`${path.join(TEST_STORE_DIR, url)}`).toString()
+        assert(tmpBuf.match('<meta name="keywords" content="fake charset=ShiftJIS">'))
+        assert(tmpBuf.match('<meta charset="UTF-8">'))
         done()
       })
   })
