@@ -111,7 +111,6 @@ describe('api', function () {
       TEST_STORE_DIR, function (err, url, viewport) {
         if (err) {
           assert(err === null)
-          throw err
         }
         assert(url.length > 0)
         assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
@@ -125,7 +124,6 @@ describe('api', function () {
       TEST_STORE_DIR, function (err, url, viewport) {
         if (err) {
           assert(err === null)
-          throw err
         }
         assert(url.length > 0)
         assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
@@ -139,7 +137,6 @@ describe('api', function () {
       TEST_STORE_DIR, function (err, url, viewport) {
         if (err) {
           assert(err === null)
-          throw err
         }
         assert(url.length > 0)
         assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
@@ -153,7 +150,6 @@ describe('api', function () {
       TEST_STORE_DIR, function (err, url, viewport) {
         if (err) {
           assert(err === null)
-          throw err
         }
         assert(url.length > 0)
         assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
@@ -169,7 +165,6 @@ describe('api', function () {
       TEST_STORE_DIR, function (err, url, viewport) {
         if (err) {
           assert(err === null)
-          throw err
         }
         assert(url.length > 0)
         assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
@@ -189,7 +184,7 @@ describe('api', function () {
     fs.writeFileSync(TEST_MARGAUX_TXT, TEST_MARGAUX_OK)
     api.ping(TEST_MARGAUX_TXT, TEST_MARGAUX_OK, TEST_MARGAUX_CHECK_URL, function (err) {
       if (err) {
-        throw err
+        assert(err === null)
       }
     })
     remove.removeSync(TEST_MARGAUX_TXT)
