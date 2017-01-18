@@ -36,4 +36,20 @@ describe('utils.createTmpServer', () => {
       })
     })
   })
+
+  it('return Google Chrome binary', function (done) {
+    const chromeBinary = utils.getGoogleChromeBin()
+    const bin = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+    assert(chromeBinary, bin)
+    done()
+  })
+
+  it('run Google Chrome browser', function (done) {
+    utils.runChromeBrowsers([], (err) => {
+      if (err) {
+        assert(false)
+      }
+    })
+    done()
+  })
 })
