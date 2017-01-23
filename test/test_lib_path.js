@@ -42,9 +42,7 @@ describe('libPath.readFile', function () {
   it('should not read path empty string', function (done) {
     const path = ''
     libPath.readFile(path, (err) => {
-      if (!err) {
-        assert(false)
-      }
+      assert(err instanceof errors.io.FileNotFoundError)
       done()
     })
   })

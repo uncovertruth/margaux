@@ -46,9 +46,7 @@ describe('utils.createTmpServer', () => {
 
   it('run Google Chrome browser', function (done) {
     utils.runChromeBrowsers([], (err) => {
-      if (err) {
-        assert(false)
-      }
+      assert(err === undefined)
     })
     done()
   })
