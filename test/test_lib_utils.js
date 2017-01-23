@@ -44,8 +44,15 @@ describe('utils.createTmpServer', () => {
     done()
   })
 
-  it('run Google Chrome browser', function (done) {
+  it('run Google Chrome browser without ports', function (done) {
     utils.runChromeBrowsers([], (err) => {
+      assert(err === undefined)
+    })
+    done()
+  })
+
+  it('run Google Chrome browser with ports', function (done) {
+    utils.runChromeBrowsers([9222, 9223, 9224, 9225], (err) => {
       assert(err === undefined)
     })
     done()
