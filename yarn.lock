@@ -588,12 +588,12 @@ chokidar@^1.6.1:
   optionalDependencies:
     fsevents "^1.0.0"
 
-chrome-remote-interface@^0.15.1:
-  version "0.15.1"
-  resolved "https://registry.yarnpkg.com/chrome-remote-interface/-/chrome-remote-interface-0.15.1.tgz#324fe7044e3efed0f03085157199e7d5f19b7152"
+chrome-remote-interface@^0.17.1:
+  version "0.17.1"
+  resolved "https://registry.yarnpkg.com/chrome-remote-interface/-/chrome-remote-interface-0.17.1.tgz#48d77ea197e78f8729557e2f02d480de5a097a40"
   dependencies:
     commander "2.1.x"
-    ws "1.x.x"
+    ws "1.1.x"
 
 circular-json@^0.3.1:
   version "0.3.1"
@@ -3732,7 +3732,7 @@ write@^0.2.1:
   dependencies:
     mkdirp "^0.5.1"
 
-ws@1.x.x:
+ws@1.1.x:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ws/-/ws-1.1.1.tgz#082ddb6c641e85d4bb451f03d52f06eabdb1f018"
   dependencies:
