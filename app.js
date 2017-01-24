@@ -4,8 +4,8 @@ const express = require('express')
 const logger = require('morgan')
 const bodyParser = require('body-parser')
 const path = require('path')
-const raven = require('raven')
 
+const raven = require('./lib/logger')
 const api = require('./api')
 const app = express()
 
@@ -22,7 +22,7 @@ if (app.get('env') === 'production') {
   app.use(logger('dev'))
 }
 
-app.use(raven.middleware.express.requestHandler(c.RAVEN_DSN))
+app.use(raven.requestHandler())
 
 app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -83,7 +83,7 @@ app.use(function (req, res, next) {
   next(err)
 })
 
-app.use(raven.middleware.express.errorHandler(c.RAVEN_DSN))
+app.use(raven.errorHandler())
 
 // development error handler
 // will print stacktrace

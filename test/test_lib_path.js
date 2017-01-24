@@ -2,6 +2,8 @@
 import { describe, it } from 'mocha'
 import assert from 'assert'
 import errors from 'common-errors'
+const fs = require('fs')
+const remove = require('remove')
 
 describe('libPath.saveFile', function () {
   const libPath = require('../lib/path')
@@ -33,6 +35,26 @@ describe('libPath.readFile', function () {
     libPath.readFile(path, (err, text) => {
       assert(err === null)
       assert.ok(text)
+      done()
+    })
+  })
+
+  it('should not read path empty string', function (done) {
+    const path = ''
+    libPath.readFile(path, (err) => {
+      assert(err instanceof errors.io.FileNotFoundError)
+      done()
+    })
+  })
+
+  it('should not read text file empty string', function (done) {
+    const path = '/tmp/_margaux/test/test_path/empty.txt'
+    fs.writeFileSync(path, '')
+    libPath.readFile(path, (err) => {
+      if (!err) {
+        assert(false)
+      }
+      remove.removeSync(path)
       done()
     })
   })

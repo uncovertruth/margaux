@@ -7,7 +7,8 @@
     "url": "https://github.com/uncovertruth/margaux/pulls"
   },
   "dependencies": {
-    "body-parser": "^1.15.2",
+    "body-parser": "^1.16.0",
+    "chrome-remote-interface": "^0.15.1",
     "chrome-remote-interface": "^0.17.1",
     "cluster": "^0.7.7",
     "co": "^4.6.0",
@@ -28,16 +29,16 @@
   },
   "devDependencies": {
     "@uncovertruth/eslint-config-flowtype": "^0.0.2",
-    "babel-cli": "^6.18.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",
+    "babel-cli": "^6.22.2",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.22.0",
     "babel-preset-power-assert": "^1.0.0",
-    "babel-register": "^6.18.0",
+    "babel-register": "^6.22.0",
     "codecov": "^1.0.1",
-    "eslint": "^3.8.1",
-    "flow-bin": "^0.37.4",
-    "istanbul": "^0.4.5",
+    "eslint": "^3.14.0",
+    "flow-bin": "^0.38.0",
     "mocha": "^3.1.2",
-    "npm-run-all": "^4.0.0",
+    "npm-run-all": "^4.0.1",
+    "nyc": "^10.1.2",
     "power-assert": "^1.4.1",
     "remove": "^0.1.5",
     "superagent": "^3.3.2",
@@ -59,15 +60,15 @@
     "url": "git+https://github.com/uncovertruth/margaux.git"
   },
   "scripts": {
-    "codecov": "codecov -f ./coverage/lcov.info",
+    "codecov": "nyc report --reporter=lcov > coverage.lcov && codecov",
     "dev": "NODE_ENV=development supervisor ./bin/www.js",
     "lint": "npm-run-all -p lint:*",
-    "lint:es": "eslint .",
+    "lint:es": "eslint . --cache",
     "lint:flow": "flow",
     "serve": "node -e \"require('./lib/utils').runChromeBrowsers(require('./const').REMOTE_DEBUGGING_PORTS)\"",
     "start": "node bin/cluster.js",
     "test": "npm-run-all -p test:*",
     "test:lint": "npm run lint",
-    "test:mocha": "NODE_ENV=test istanbul cover _mocha"
+    "test:mocha": "nyc mocha -- test"
   }
 }
