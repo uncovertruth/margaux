@@ -38,14 +38,12 @@ describe('lib/margaux', () => {
 
   it('should not create without host and port', function (done) {
     margaux.create('', 0, (err) => {
-      if (!err) {
-        assert(false)
-      }
+      assert(err)
       done()
     })
   })
 
-  it('should not set cookie without cookie name', function (done) {
+  it('should not set cookie without cookie name', function () {
     const chrome = createTmpServer('', {})
     const cookieOpts = {
       cookieName: '',
@@ -55,10 +53,9 @@ describe('lib/margaux', () => {
       assert(err instanceof errors.ArgumentNullError)
       assert(err.message === 'Missing argument: cookieName')
     })
-    done()
   })
 
-  it('should not set cookie without value name', function (done) {
+  it('should not set cookie without value name', function () {
     const chrome = createTmpServer('', {})
     const cookieOpts = {
       cookieName: 'test',
@@ -68,10 +65,9 @@ describe('lib/margaux', () => {
       assert(err instanceof errors.ArgumentNullError)
       assert(err.message === 'Missing argument: value')
     })
-    done()
   })
 
-  it('should not delete cookie without cookieName', function (done) {
+  it('should not delete cookie without cookieName', function () {
     const chrome = createTmpServer('', {})
     const cookieOpts = {
       cookieName: '',
@@ -81,10 +77,9 @@ describe('lib/margaux', () => {
       assert(err instanceof errors.ArgumentNullError)
       assert(err.message === 'Missing argument: cookieName')
     })
-    done()
   })
 
-  it('should not delete cookie without url', function (done) {
+  it('should not delete cookie without url', function () {
     const chrome = createTmpServer('', {})
     const cookieOpts = {
       cookieName: 'test',
@@ -94,7 +89,6 @@ describe('lib/margaux', () => {
       assert(err instanceof errors.ArgumentNullError)
       assert(err.message === 'Missing argument: url')
     })
-    done()
   })
 
   it('(get|set|delete)Cookies', function (done) {
