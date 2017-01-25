@@ -36,15 +36,36 @@ describe('lib/margaux', () => {
     })
   })
 
-  it('should remove scripts without arguments', function () {
+  it('should not remove scripts with empty arguments', function () {
     const chrome = createTmpServer('', {})
     return (
-      new Promise(() => {
+      new Promise((resolve, reject) => {
         margaux.removeScripts(chrome, (err) => {
-          assert(err)
+          if (err) {
+            reject(err)
+          }
         })
       }).catch((err) => {
         assert(err)
+      })
+    )
+  })
+
+  it('should not remove scripts with empty argumets', function () {
+    const html = '<html><head></head><body>Hello</body></html>'
+    const chrome = createTmpServer(html, {})
+    return (
+      new Promise((resolve, reject) => {
+        margaux.removeScripts(chrome, (err) => {
+          if (!err) {
+            reject()
+          }
+          resolve(err)
+        }).then((err) => {
+          assert(err)
+        }).catch(() => {
+          assert(false)
+        })
       })
     )
   })
