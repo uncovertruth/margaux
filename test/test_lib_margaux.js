@@ -36,6 +36,24 @@ describe('lib/margaux', () => {
     })
   })
 
+  it('should not remove scripts without arguments', function () {
+    const chrome = createTmpServer('', {})
+    return (
+      new Promise((resolve, reject) => {
+        margaux.removeScripts(chrome, (err) => {
+          if (err) {
+            reject(err)
+          }
+          resolve()
+        })
+      }).then((val) => {
+        assert(val)
+      }, (err) => {
+        assert(err)
+      })
+    )
+  })
+
   it('should not create without host and port', function (done) {
     margaux.create('', 0, (err) => {
       assert(err)
