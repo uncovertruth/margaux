@@ -43,6 +43,16 @@ describe('lib/margaux', () => {
     })
   })
 
+  it('should not remove scripts without HTML tags', function (done) {
+    const chrome = createTmpServer('', {})
+    chrome.then((server) => {
+      margaux.removeScripts(server)
+    }).catch((err) => {
+      assert(err)
+      done()
+    })
+  })
+
   it('should not set cookie without cookie name', function () {
     const chrome = createTmpServer('', {})
     const cookieOpts = {
