@@ -17,6 +17,7 @@ describe('lib/margaux', () => {
   const setCookie = promisify(margaux.setCookie)
   const getCookies = promisify(margaux.getCookies)
   const getOuterHTML = promisify(margaux.getOuterHTML)
+  const emptyIframes = promisify(margaux.emptyIframes)
 
   it('evaluate', function (done) {
     margaux.create('localhost', 9223, (err, chrome) => {
@@ -50,6 +51,16 @@ describe('lib/margaux', () => {
     }).catch((err) => {
       assert(err)
       done()
+    })
+  })
+
+  it('should work emptyIframes with iframe tag', function (done) {
+    const html = '<html><head></head><body><iframe></iframe></body></html>'
+    const chrome = createTmpServer(html, {})
+    chrome.then((server) => {
+      emptyIframes(server)
+    }).then((res) => {
+      done(res)
     })
   })
 
