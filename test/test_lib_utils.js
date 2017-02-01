@@ -38,6 +38,21 @@ describe('utils.createTmpServer', () => {
     })
   })
 
+  it.only('confirm DOM in return value of server', (done) => {
+    utils.createTmpServer(html, {}, (err, server) => {
+      if (err) {
+        throw err
+      }
+      request.get('http://localhost:' + server.address().port).end((err, res) => {
+        if (err) {
+          throw err
+        }
+        assert.ok(res.DOM)
+        server.close(done)
+      })
+    })
+  })
+
   it('return Google Chrome binary', function () {
     const chromeBinary = utils.getGoogleChromeBin()
     const bin = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
