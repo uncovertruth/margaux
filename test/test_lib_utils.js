@@ -16,6 +16,7 @@ describe('utils.createTmpServer', () => {
         if (err) {
           throw err
         }
+        console.log(res)
         assert.ok(res.headers['accept-language'] === 'ja')
         server.close(done)
       })
