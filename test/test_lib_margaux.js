@@ -64,51 +64,63 @@ describe('lib/margaux', () => {
     })
   })
 
-  it('should not set cookie without cookie name', function () {
+  it('should not set cookie without cookie name', function (done) {
     const chrome = createTmpServer('', {})
     const cookieOpts = {
       cookieName: '',
       value: 12345
     }
-    margaux.setCookie(chrome, cookieOpts, (err) => {
-      assert(err instanceof errors.ArgumentNullError)
-      assert(err.message === 'Missing argument: cookieName')
+    chrome.then((server) => {
+      margaux.setCookie(server, cookieOpts, (err) => {
+        assert(err instanceof errors.ArgumentNullError)
+        assert(err.message === 'Missing argument: cookieName')
+        done()
+      })
     })
   })
 
-  it('should not set cookie without value name', function () {
+  it('should not set cookie without value name', function (done) {
     const chrome = createTmpServer('', {})
     const cookieOpts = {
       cookieName: 'test',
       value: ''
     }
-    margaux.setCookie(chrome, cookieOpts, (err) => {
-      assert(err instanceof errors.ArgumentNullError)
-      assert(err.message === 'Missing argument: value')
+    chrome.then((server) => {
+      margaux.setCookie(server, cookieOpts, (err) => {
+        assert(err instanceof errors.ArgumentNullError)
+        assert(err.message === 'Missing argument: value')
+        done()
+      })
     })
   })
 
-  it('should not delete cookie without cookieName', function () {
+  it('should not delete cookie without cookieName', function (done) {
     const chrome = createTmpServer('', {})
     const cookieOpts = {
       cookieName: '',
       url: 'http://localhost/'
     }
-    margaux.deleteCookie(chrome, cookieOpts, (err) => {
-      assert(err instanceof errors.ArgumentNullError)
-      assert(err.message === 'Missing argument: cookieName')
+    chrome.then((server) => {
+      margaux.deleteCookie(server, cookieOpts, (err) => {
+        assert(err instanceof errors.ArgumentNullError)
+        assert(err.message === 'Missing argument: cookieName')
+        done()
+      })
     })
   })
 
-  it('should not delete cookie without url', function () {
+  it('should not delete cookie without url', function (done) {
     const chrome = createTmpServer('', {})
     const cookieOpts = {
       cookieName: 'test',
       url: ''
     }
-    margaux.deleteCookie(chrome, cookieOpts, (err) => {
-      assert(err instanceof errors.ArgumentNullError)
-      assert(err.message === 'Missing argument: url')
+    chrome.then((server) => {
+      margaux.deleteCookie(server, cookieOpts, (err) => {
+        assert(err instanceof errors.ArgumentNullError)
+        assert(err.message === 'Missing argument: url')
+        done()
+      })
     })
   })
 
