@@ -7,8 +7,8 @@ import path from 'path'
 import remove from 'remove'
 
 describe('api', function () {
-  const utils = require('../lib/utils')
-  const api = require('../api')
+  const utils = require('../src/lib/utils')
+  const api = require('../src/api')
 
   let testUrlHost
   const testUrlWithoutViewport = '/'

@@ -7,7 +7,7 @@
     "url": "https://github.com/uncovertruth/margaux/pulls"
   },
   "dependencies": {
-    "body-parser": "^1.16.0",
+    "body-parser": "^1.16.1",
     "chrome-remote-interface": "^0.15.1",
     "cluster": "^0.7.7",
     "co": "^4.6.0",
@@ -15,14 +15,14 @@
     "common-errors": "^1.0.0",
     "cookie-parser": "^1.4.3",
     "es6-promisify": "^5.0.0",
-    "express": "^4.14.0",
+    "express": "^4.14.1",
     "inliner": "^1.9.5",
     "lodash": "^4.16.4",
     "mkdirp": "^0.5.1",
     "moment": "^2.15.2",
-    "morgan": "^1.7.0",
+    "morgan": "^1.8.1",
     "portastic": "^1.0.1",
-    "raven": "^1.1.1",
+    "raven": "^1.1.2",
     "uuid": "^3.0.1",
     "validator": "^6.1.0"
   },
@@ -30,18 +30,19 @@
     "@uncovertruth/eslint-config-flowtype": "^0.0.2",
     "babel-cli": "^6.22.2",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.22.0",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-preset-power-assert": "^1.0.0",
     "babel-register": "^6.22.0",
     "codecov": "^1.0.1",
-    "eslint": "^3.14.0",
-    "flow-bin": "^0.38.0",
+    "eslint": "^3.15.0",
+    "flow-bin": "^0.39.0",
     "mocha": "^3.1.2",
     "npm-run-all": "^4.0.1",
     "nyc": "^10.1.2",
     "power-assert": "^1.4.1",
     "remove": "^0.1.5",
-    "superagent": "^3.3.2",
-    "supertest": "^2.0.1"
+    "superagent": "^3.4.1",
+    "supertest": "^3.0.0"
   },
   "directories": {
     "test": "test"
@@ -59,12 +60,16 @@
     "url": "git+https://github.com/uncovertruth/margaux.git"
   },
   "scripts": {
+    "build": "babel src -d dist",
     "codecov": "nyc report --reporter=lcov > coverage.lcov && codecov",
     "dev": "NODE_ENV=development supervisor ./bin/www.js",
     "lint": "npm-run-all -p lint:*",
     "lint:es": "eslint . --cache",
     "lint:flow": "flow",
-    "serve": "node -e \"require('./lib/utils').runChromeBrowsers(require('./const').REMOTE_DEBUGGING_PORTS)\"",
+    "predev": "npm run build",
+    "preserve": "npm run build",
+    "prestart": "npm run build",
+    "serve": "node -e \"require('./dist/lib/utils').runChromeBrowsers(require('./dist/const').REMOTE_DEBUGGING_PORTS)\"",
     "start": "node bin/cluster.js",
     "test": "npm-run-all -p test:*",
     "test:lint": "npm run lint",

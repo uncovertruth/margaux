@@ -1,4 +1,3 @@
-/* eslint no-console: 0 */
 'use strict'
 
 // SEE ALSO: https://developer.chrome.com/devtools/docs/protocol/1.1/index

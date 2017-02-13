@@ -4,7 +4,7 @@ import assert from 'assert'
 import request from 'superagent'
 
 describe('utils.createTmpServer', () => {
-  const utils = require('../lib/utils')
+  const utils = require('../src/lib/utils')
   const html = '<html><head></head><body>hello</body></html>'
 
   it('return server', (done) => {

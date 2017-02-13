@@ -2,7 +2,7 @@
 
 const _ = require('lodash')
 const cluster = require('cluster')
-const app = require('./../app')
+const app = require('./../dist/app')
 const numCPUs = require('os').cpus().length
 const port = 8080
 
