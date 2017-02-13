@@ -27,7 +27,7 @@
     "validator": "^6.1.0"
   },
   "devDependencies": {
-    "@uncovertruth/eslint-config-flowtype": "^0.0.2",
+    "@uncovertruth/eslint-config-flowtype": "^0.1.0",
     "babel-cli": "^6.22.2",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.22.0",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
@@ -53,7 +53,7 @@
     "snapshot"
   ],
   "license": "MIT",
-  "main": "index.js",
+  "main": "n/a",
   "private": true,
   "repository": {
     "type": "git",
@@ -66,6 +66,7 @@
     "lint": "npm-run-all -p lint:*",
     "lint:es": "eslint . --cache",
     "lint:flow": "flow",
+    "postinstall": "npm run build",
     "predev": "npm run build",
     "preserve": "npm run build",
     "prestart": "npm run build",
