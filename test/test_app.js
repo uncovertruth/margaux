@@ -5,8 +5,8 @@ import request from 'supertest'
 import http from 'http'
 
 describe('POST /', function () {
-  const utils = require('../lib/utils')
-  const app = require('../app')
+  const utils = require('../src/lib/utils')
+  const app = require('../src/app')
   const testHtml = '<!DOCTYPE html><html><body><head></head></body></html>'
 
   before(function (done) {
