@@ -1,3 +1,4 @@
+/* @flow */
 'use strict'
 
 const storeDir = process.env.NODE_WEBSNAPSHOT_STORE_DIR ||
@@ -6,7 +7,7 @@ const storeDir = process.env.NODE_WEBSNAPSHOT_STORE_DIR ||
 const tabTimeout = process.env.NODE_NEO_PAGE_CACHE_TAB_TIMEOUT ||
   30 * 1000
 
-const numBrowser = process.env.NODE_WEBSNAPSHOT_NUM_BROWSER || 4
+const numBrowser: any = process.env.NODE_WEBSNAPSHOT_NUM_BROWSER || 4
 
 const REMOTE_DEBUGGING_PORTS_START = 9221
 
@@ -21,6 +22,6 @@ module.exports = {
   CLOSE_TAB_TIMEOUT: tabTimeout,
   MOUNT_CHECK_FILE: 'margaux_check.txt',
   MOUNT_CHECK_CONTENT: 'OK',
-  RAVEN_DNS: process.env.RAVEN_DSN,
+  RAVEN_DSN: process.env.RAVEN_DSN,
   CHROME_CHECK_URL: process.env.NODE_WEBSNAPHOT_CHECK_TEXT
 }

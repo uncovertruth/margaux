@@ -51,7 +51,7 @@ Api.prototype.parseParameters = function (params) {
     referer: params.referer || '',
     width: parseInt(params.width, 10) || 1024,
     height: parseInt(params.height, 10) || 768,
-    waitTime: params.waitTime || 5 * 1000,
+    waitTime: params.waitTime || 10 * 1000,
     userAgent: userAgent,
     acceptLanguage: params.acceptLanguage || 'ja', // 'ハイフン嫌なのでラクダで'
     saveDir: params.saveDir || 'x',  // project_id を想定
