@@ -1,3 +1,4 @@
+/* @flow */
 'use strict'
 
 const Chrome = require('chrome-remote-interface')
@@ -6,7 +7,10 @@ const u = require('url')
 const _ = require('lodash')
 const util = require('util')
 
-module.exports.create = (host, port, callback) => {
+type Callback = any // TODO
+type Options = any // TODO
+
+export function create (host: string, port: number, callback: Callback) {
   Chrome.New({
     'host': host,
     'port': port
@@ -29,14 +33,14 @@ module.exports.create = (host, port, callback) => {
   })
 }
 
-module.exports.navigate = (chrome, url, callback) => {
+export function navigate (chrome: Chrome, url: string, callback: Callback) {
   chrome.on('Page.loadEventFired', (result) => {
     callback()
   })
   chrome.Page.navigate({'url': url})
 }
 
-module.exports.close = (chrome, callback) => {
+export function close (chrome: Chrome, callback: Callback) {
   Chrome.Close({
     host: chrome.host,
     port: chrome.port,
@@ -48,7 +52,7 @@ module.exports.close = (chrome, callback) => {
   })
 }
 
-module.exports.setDeviceMetricsOver = (chrome, opts, callback) => {
+export function setDeviceMetricsOver (chrome: Chrome, opts: Options, callback: Callback) {
   const width = opts.width || 1024
   const height = opts.height || 768
 
@@ -66,7 +70,7 @@ module.exports.setDeviceMetricsOver = (chrome, opts, callback) => {
   })
 }
 
-module.exports.setUserAgentOverride = (chrome, opts, callback) => {
+export function setUserAgentOverride (chrome: Chrome, opts: Options, callback: Callback) {
   const userAgent = opts.userAgent ||
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/' +
     '537.36 (KHTML, like Gecko) Chrome/47.0.2526.73 Safari/537.36'
@@ -81,7 +85,7 @@ module.exports.setUserAgentOverride = (chrome, opts, callback) => {
   })
 }
 
-module.exports.setHeaders = (chrome, _headers, callback) => {
+export function setHeaders (chrome: Chrome, _headers: string, callback: Callback) {
   chrome.Network.setExtraHTTPHeaders({
     headers: _headers // hash
   }, (err, resp) => {
@@ -92,7 +96,7 @@ module.exports.setHeaders = (chrome, _headers, callback) => {
   })
 }
 
-module.exports.getOuterHTML = (chrome, callback) => {
+export function getOuterHTML (chrome: Chrome, callback: Callback) {
   chrome.DOM.getDocument(null, (err, resp) => {
     if (err) {
       return callback(new Error(resp.message))
@@ -107,7 +111,7 @@ module.exports.getOuterHTML = (chrome, callback) => {
   })
 }
 
-module.exports.removeScripts = (chrome, callback) => {
+export function removeScripts (chrome: Chrome, callback: Callback) {
   chrome.DOM.getDocument(null, (err, resp) => {
     if (err) {
       return callback(new Error(resp.message))
@@ -138,7 +142,7 @@ module.exports.removeScripts = (chrome, callback) => {
   })
 }
 
-module.exports.emptyIframes = (chrome, callback) => {
+export function emptyIframes (chrome: Chrome, callback: Callback) {
   chrome.DOM.getDocument(null, (err, resp) => {
     if (err) {
       return callback(new Error(resp.message))
@@ -170,7 +174,7 @@ module.exports.emptyIframes = (chrome, callback) => {
   })
 }
 
-module.exports.evaluate = (chrome, expression, callback) => {
+export function evaluate (chrome: Chrome, expression: any, callback: Callback) {
   // XXX: expression の validate ができないか考える
   // const expression = 'setTimeout(window.close, 3 * 1000)';
   chrome.Runtime.evaluate({
@@ -183,7 +187,7 @@ module.exports.evaluate = (chrome, expression, callback) => {
   })
 }
 
-module.exports.convertLinkToAbsolutely = (chrome, opts, callback) => {
+export function convertLinkToAbsolutely (chrome: Chrome, opts: Options, callback: Callback) {
   const baseURI = opts.baseURI
   const selector = opts.selector
   const attribute = {'img': 'src', 'link': 'href'}[selector]
@@ -237,7 +241,7 @@ module.exports.convertLinkToAbsolutely = (chrome, opts, callback) => {
   })
 }
 
-module.exports.getCookies = (chrome, opts, callback) => {
+export function getCookies (chrome: Chrome, opts: Options, callback: Callback) {
   chrome.Network.getCookies((err, resp) => {
     if (err) {
       return callback(new Error(resp.message))
@@ -246,7 +250,7 @@ module.exports.getCookies = (chrome, opts, callback) => {
   })
 }
 
-module.exports.setCookie = (chrome, opts, callback) => {
+export function setCookie (chrome: Chrome, opts: Options, callback: Callback) {
   const cookieName = opts.cookieName
   const value = opts.value
   const expires = opts.expires || 10 * 1000
@@ -277,7 +281,7 @@ module.exports.setCookie = (chrome, opts, callback) => {
   })
 }
 
-module.exports.deleteCookie = (chrome, opts, callback) => {
+export function deleteCookie (chrome: Chrome, opts: Options, callback: Callback) {
   if (!opts.cookieName) {
     return callback(new errors.ArgumentNullError('cookieName'))
   }
@@ -293,7 +297,7 @@ module.exports.deleteCookie = (chrome, opts, callback) => {
   })
 }
 
-module.exports.extractViewport = (chrome, callback) => {
+export function extractViewport (chrome: Chrome, callback: Callback) {
   // viewportのmetaタグはこの3つとcontentの中身（viewportの定義）しかattributeがないと信じている。
   const unnecessary = ['name', 'viewport', 'content']
   chrome.DOM.getDocument(null, (err, resp) => {
@@ -334,15 +338,13 @@ module.exports.extractViewport = (chrome, callback) => {
           function (e) { return e !== null }).join(',')
         callback(null, result)
       }).catch(function (err) {
-        console.error('======= ERROR ==========')
-        console.error(err)
         return callback(new Error(err))
       })
     })
   })
 }
 
-module.exports.forceCharset = (chrome, callback) => {
+export function forceCharset (chrome: Chrome, callback: Callback) {
   chrome.DOM.getDocument(null, (err, resp) => {
     if (err) {
       return callback(new Error(resp.message))
@@ -398,8 +400,6 @@ module.exports.forceCharset = (chrome, callback) => {
       })).then(function (results) {
         callback(null, results)
       }).catch(function (err) {
-        console.error('======= ERROR ==========')
-        console.error(err)
         return callback(new Error(err))
       })
     })

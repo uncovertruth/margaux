@@ -7,7 +7,6 @@ import path from 'path'
 import remove from 'remove'
 
 describe.skip('api', function () {
-  const utils = require('../src/lib/utils')
   const api = require('../src/api')
 
   let testUrlHost
@@ -75,7 +74,8 @@ describe.skip('api', function () {
   const TEST_STORE_DIR = '/tmp/_margaux/_margaux_test'
 
   before(function (done) {
-    utils.emptyPorts((err, emptyPorts) => {
+    const emptyPorts = require('../src/lib/utils').emptyPorts
+    emptyPorts((err, emptyPorts) => {
       assert(err === null)
       const httpPort = emptyPorts[0]
       http.createServer(function (req, res) {

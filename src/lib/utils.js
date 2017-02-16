@@ -51,11 +51,23 @@ function listenOneAnyPorts (server, ports, callback) {
   })
 }
 
+export function runChromeWithRemoteDebuggingPort (remoteDebuggingPort: number, callback: any) {
+  const args = [
+    '--remote-debugging-port=' + remoteDebuggingPort,
+    '--no-default-browser-check',
+    '--no-first-run',
+    '--disable-default-apps',
+    '--user-data-dir=' + os.tmpdir() + '/test.chrome' + remoteDebuggingPort
+  ]
+
+  return callback(null, spawn(getGoogleChromeBin(), args))
+}
+
 export function runChromeBrowsers (ports: number[] = [9222, 9223, 9224, 9225], callback: any) {
   const queue = []
   ports.forEach((port: number) => {
     queue.push(new Promise((resolve, reject) => {
-      libUtils.runChromeWithRemoteDebuggingPort(port, (err, result) => {
+      runChromeWithRemoteDebuggingPort(port, (err, result) => {
         if (err) {
           return reject(err)
         }
@@ -70,44 +82,27 @@ export function runChromeBrowsers (ports: number[] = [9222, 9223, 9224, 9225], c
   })
 }
 
-const libUtils = {
+export function createTmpServer (html: any, opts: any, callback: any) {
+  emptyPorts((err, ports) => {
+    if (err) {
+      return callback(err)
+    }
 
-  'runChromeWithRemoteDebuggingPort': (remoteDebuggingPort: number, callback: any) => {
-    const args = [
-      '--remote-debugging-port=' + remoteDebuggingPort,
-      '--no-default-browser-check',
-      '--no-first-run',
-      '--disable-default-apps',
-      '--user-data-dir=' + os.tmpdir() + '/test.chrome' + remoteDebuggingPort
-    ]
+    const acceptLanguage = opts.acceptLanguage || 'ja'
 
-    return callback(null, spawn(getGoogleChromeBin(), args))
-  },
+    const server = http.createServer((req, res) => {
+      res.writeHead(200, {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Accept-Language': acceptLanguage
+      })
+      res.end(req.url === '/' ? html : '')
+    })
 
-  'createTmpServer': (html: any, opts: any, callback: any) => {
-    emptyPorts((err, ports) => {
+    listenOneAnyPorts(server, ports, (err: null | Error, port: void) => {
       if (err) {
         return callback(err)
       }
-
-      const acceptLanguage = opts.acceptLanguage || 'ja'
-
-      const server = http.createServer((req, res) => {
-        res.writeHead(200, {
-          'Content-Type': 'text/html; charset=utf-8',
-          'Accept-Language': acceptLanguage
-        })
-        res.end(req.url === '/' ? html : '')
-      })
-
-      listenOneAnyPorts(server, ports, (err: null | Error, port: void) => {
-        if (err) {
-          return callback(err)
-        }
-        callback(null, server)
-      })
+      callback(null, server)
     })
-  }
+  })
 }
-
-export default libUtils

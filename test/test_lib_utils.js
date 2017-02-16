@@ -7,8 +7,8 @@ describe('utils', () => {
   const html = `<html><head></head><body>hello</body></html>`
 
   it('return server', (done) => {
-    const utils = require('../src/lib/utils').default
-    utils.createTmpServer(html, {}, (err, server) => {
+    const createTmpServer = require('../src/lib/utils').createTmpServer
+    createTmpServer(html, {}, (err, server) => {
       if (err) {
         throw err
       }
@@ -23,8 +23,8 @@ describe('utils', () => {
   })
 
   it('can specify accept language', (done) => {
-    const utils = require('../src/lib/utils').default
-    utils.createTmpServer(html, {acceptLanguage: 'en'}, (err, server) => {
+    const createTmpServer = require('../src/lib/utils').createTmpServer
+    createTmpServer(html, {acceptLanguage: 'en'}, (err, server) => {
       if (err) {
         throw err
       }
