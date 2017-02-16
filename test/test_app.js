@@ -5,13 +5,13 @@ import request from 'supertest'
 import http from 'http'
 
 describe('POST /', function () {
-  const utils = require('../src/lib/utils')
   const app = require('../src/app')
   const testHtml = '<!DOCTYPE html><html><body><head></head></body></html>'
 
-  before(function (done) {
+  before(done => {
+    const emptyPorts = require('../src/lib/utils').emptyPorts
     // crawl 対象となるテストサーバーを起動する
-    utils.emptyPorts((err, emptyPorts) => {
+    emptyPorts((err, emptyPorts) => {
       assert(err === null)
       const httpPort = emptyPorts[0]
       http.createServer(function (req, res) {

@@ -7,10 +7,8 @@ import promisify from 'es6-promisify'
 import errors from 'common-errors'
 
 describe('lib/margaux', () => {
-  const utils = require('../src/lib/utils')
   const margaux = require('../src/lib/margaux')
-
-  const createTmpServer = promisify(utils.createTmpServer)
+  const createTmpServer = promisify(require('../src/lib/utils').createTmpServer)
   const create = promisify(margaux.create)
   const navigate = promisify(margaux.navigate)
   const deleteCookie = promisify(margaux.deleteCookie)
