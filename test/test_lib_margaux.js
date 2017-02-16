@@ -7,7 +7,7 @@ import promisify from 'es6-promisify'
 import errors from 'common-errors'
 
 describe('lib/margaux', () => {
-  const utils = require('../src/lib/utils')
+  const utils = require('../src/lib/utils').default
   const margaux = require('../src/lib/margaux')
 
   const createTmpServer = promisify(utils.createTmpServer)
