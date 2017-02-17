@@ -1,9 +1,9 @@
 /* @flow */
 
 import Raven from 'raven'
-const c = require('../const')
+import { RAVEN_DSN } from '../const'
 
-Raven.config(c.RAVEN_DSN).install()
+Raven.config(RAVEN_DSN).install()
 export default Raven
 
 type CustomError = string | Error
