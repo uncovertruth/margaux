@@ -1,16 +1,18 @@
+/* @flow */
 'use strict'
 
-const _ = require('lodash')
-const errors = require('common-errors')
-const path = require('path')
-const validator = require('validator')
-const promisify = require('es6-promisify')
-const co = require('co')
-const uuid = require('uuid')
+import _ from 'lodash'
+import errors from 'common-errors'
+import path from 'path'
+import validator from 'validator'
+import promisify from 'es6-promisify'
+import co from 'co'
+import uuid from 'uuid'
 
-const margaux = require('./lib/margaux')
-const inliner = require('./lib/inliner')
-const libPath = require('./lib/path')
+import * as margaux from './lib/margaux'
+import inliner from './lib/inliner'
+import * as libPath from './lib/path'
+import { REMOTE_DEBUGGING_PORTS, CLOSE_TAB_TIMEOUT } from './const'
 
 const create = promisify(margaux.create)
 const evaluate = promisify(margaux.evaluate)
@@ -26,19 +28,13 @@ const removeScripts = promisify(margaux.removeScripts)
 const emptyIframes = promisify(margaux.emptyIframes)
 const getOuterHTML = promisify(margaux.getOuterHTML)
 const close = promisify(margaux.close)
-const inline = promisify(inliner.inline)
+const inline = promisify(inliner)
 const saveFile = promisify(libPath.saveFile)
 const wait = (delay) => {
   return new Promise((resolve, reject) => {
     setTimeout(resolve, delay)
   })
 }
-
-const c = require('./const')
-const REMOTE_DEBUGGING_PORTS = c.REMOTE_DEBUGGING_PORTS
-// console.log('REMOTE')
-// console.log(REMOTE_DEBUGGING_PORTS)
-const CLOSE_TAB_TIMEOUT = c.CLOSE_TAB_TIMEOUT
 
 function Api () {}
 
@@ -156,8 +152,7 @@ Api.prototype.takeWebSnapshot = function (url, params, storeBaseDir, callback) {
   }).catch(callback)
 }
 
-Api.prototype.ping = function (mountCheckFile, mountCheckContent,
-                              chromeCheckURL, callback) {
+Api.prototype.ping = function (mountCheckFile, mountCheckContent, chromeCheckURL, callback) {
   // mountが外れていると嫌なのでチェック
   if (!libPath.isFileExists(mountCheckFile)) {
     return callback(errors.NotFoundError(
@@ -188,4 +183,4 @@ Api.prototype.ping = function (mountCheckFile, mountCheckContent,
   }).catch(callback)
 }
 
-module.exports = new Api()
+export default new Api()

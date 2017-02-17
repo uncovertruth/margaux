@@ -5,8 +5,8 @@ import request from 'supertest'
 import http from 'http'
 
 describe('POST /', function () {
-  const app = require('../src/app')
-  const testHtml = '<!DOCTYPE html><html><body><head></head></body></html>'
+  const app = require('../src/app').default
+  const testHtml = `<!DOCTYPE html><html><body><head></head></body></html>`
 
   before(done => {
     const emptyPorts = require('../src/lib/utils').emptyPorts
