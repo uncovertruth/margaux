@@ -3,12 +3,12 @@ import { describe, it } from 'mocha'
 import assert from 'assert'
 import request from 'superagent'
 
-describe('utils.createTmpServer', () => {
-  const utils = require('../src/lib/utils')
-  const html = '<html><head></head><body>hello</body></html>'
+describe('utils', () => {
+  const html = `<html><head></head><body>hello</body></html>`
 
   it('return server', (done) => {
-    utils.createTmpServer(html, {}, (err, server) => {
+    const createTmpServer = require('../src/lib/utils').createTmpServer
+    createTmpServer(html, {}, (err, server) => {
       if (err) {
         throw err
       }
@@ -23,7 +23,8 @@ describe('utils.createTmpServer', () => {
   })
 
   it('can specify accept language', (done) => {
-    utils.createTmpServer(html, {acceptLanguage: 'en'}, (err, server) => {
+    const createTmpServer = require('../src/lib/utils').createTmpServer
+    createTmpServer(html, {acceptLanguage: 'en'}, (err, server) => {
       if (err) {
         throw err
       }
@@ -38,19 +39,22 @@ describe('utils.createTmpServer', () => {
   })
 
   it('return Google Chrome binary', function () {
-    const chromeBinary = utils.getGoogleChromeBin()
+    const getGoogleChromeBin = require('../src/lib/utils').getGoogleChromeBin
+    const chromeBinary = getGoogleChromeBin()
     const bin = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
     assert(chromeBinary, bin)
   })
 
   it('run Google Chrome browser without ports', function () {
-    utils.runChromeBrowsers([], (err) => {
+    const runChromeBrowsers = require('../src/lib/utils').runChromeBrowsers
+    runChromeBrowsers([], (err) => {
       assert(err === undefined)
     })
   })
 
   it('run Google Chrome browser with ports', function () {
-    utils.runChromeBrowsers([9222, 9223, 9224, 9225], (err) => {
+    const runChromeBrowsers = require('../src/lib/utils').runChromeBrowsers
+    runChromeBrowsers([9222, 9223, 9224, 9225], (err) => {
       assert(err === undefined)
     })
   })

@@ -1,10 +1,11 @@
+/* @flow */
 'use strict'
 
-const Inliner = require('inliner')
-const utils = require('./utils')
+import Inliner from 'inliner'
+import { createTmpServer } from './utils'
 
-module.exports.inline = (html, opts, callback) => {
-  utils.createTmpServer(html, opts, (err, server) => {
+export default function (html: any, opts: any, callback: any) {
+  createTmpServer(html, opts, (err, server) => {
     if (err) {
       return callback(err)
     }
