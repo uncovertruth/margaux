@@ -9,6 +9,7 @@ import os from 'os'
 import promisify from 'es6-promisify'
 import co from 'co'
 
+import { warning } from './logger'
 import { REMOTE_DEBUGGING_PORTS } from '../const'
 
 export function getGoogleChromeBin (): string {
@@ -43,6 +44,7 @@ function listenOneAnyPorts (server, ports, callback) {
       } catch (err) {
         // アドレスが既に使用されている場合は想定内なので処理を継続
         if (err.code === 'EADDRINUSE') {
+          warning(`duplicated ports`, {port})
           continue
         }
         return callback(err)

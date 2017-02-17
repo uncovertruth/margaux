@@ -41,6 +41,7 @@
     "nyc": "^10.1.2",
     "power-assert": "^1.4.1",
     "remove": "^0.1.5",
+    "rimraf": "^2.5.4",
     "superagent": "^3.4.1",
     "supertest": "^3.0.0"
   },
@@ -61,12 +62,14 @@
   },
   "scripts": {
     "build": "babel src -d dist",
+    "clean": "rimraf dist coverage",
     "codecov": "nyc report --reporter=lcov > coverage.lcov && codecov",
     "dev": "NODE_ENV=development supervisor ./bin/www.js",
     "lint": "npm-run-all -p lint:*",
     "lint:es": "eslint . --cache",
     "lint:flow": "flow",
     "postinstall": "npm run build",
+    "prebuild": "npm run clean",
     "predev": "npm run build",
     "preserve": "npm run build",
     "prestart": "npm run build",

@@ -1,16 +1,20 @@
+/* @flow */
 'use strict'
+import express from 'express'
+import logger from 'morgan'
+import bodyParser from 'body-parser'
+import path from 'path'
 
-const express = require('express')
-const logger = require('morgan')
-const bodyParser = require('body-parser')
-const path = require('path')
+import {
+  WEBSNAPSHOT_STORE_DIR as storeBaseDir,
+  MOUNT_CHECK_FILE as mountCheckFile,
+  MOUNT_CHECK_CONTENT as mountCheckContent,
+  CHROME_CHECK_URL as chromeCheckURL
+} from './const'
+import Raven, { error } from './lib/logger'
+import api from './api'
 
-import Raven from './lib/logger'
-const api = require('./api')
 const app = express()
-
-const c = require('./const')
-const storeBaseDir = c.WEBSNAPSHOT_STORE_DIR
 
 // uncomment after placing your favicon in /public
 // var favicon = require('serve-favicon');
@@ -45,9 +49,6 @@ app.post('/', (req, res, next) => {
 })
 
 app.get('/ping', (req, res, next) => {
-  const mountCheckFile = c.MOUNT_CHECK_FILE
-  const mountCheckContent = c.MOUNT_CHECK_CONTENT
-  const chromeCheckURL = c.CHROME_CHECK_URL
   const storePath = path.join(storeBaseDir, mountCheckFile)
   api.ping(storePath, mountCheckContent, chromeCheckURL, (err) => {
     if (err) {
@@ -78,7 +79,7 @@ if (app.get('env') === 'development') {
 // catch 404 and forward to error handler
 // これより前に dispatch を記述しないと 404 になるので注意
 app.use(function (req, res, next) {
-  const err = new Error('Not Found')
+  const err: any = new Error('Not Found')
   err.status = 404
   next(err)
 })
@@ -94,7 +95,7 @@ if (app.get('env') === 'development') {
       message: err.message,
       error: err
     }
-    console.error(err.stack || err)
+    error(err.stack || err)
     res.send(body)
     next()
   })
@@ -112,4 +113,4 @@ app.use(function (err, req, res, next) {
   next()
 })
 
-module.exports = app
+export default app
