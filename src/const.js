@@ -15,4 +15,4 @@ for (let i: number = 0; i < numBrowser; i++) {
   debuggingPorts.push(REMOTE_DEBUGGING_PORTS_START + i)
 }
 
-export const REMOTE_DEBUGGING_PORTSL: number[] = debuggingPorts
+export const REMOTE_DEBUGGING_PORTS: number[] = debuggingPorts

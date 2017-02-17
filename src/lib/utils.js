@@ -9,6 +9,8 @@ import os from 'os'
 import promisify from 'es6-promisify'
 import co from 'co'
 
+import { REMOTE_DEBUGGING_PORTS } from '../const'
+
 export function getGoogleChromeBin (): string {
   if (os.platform() === 'darwin') {
     return '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
@@ -63,7 +65,7 @@ export function runChromeWithRemoteDebuggingPort (remoteDebuggingPort: number, c
   return callback(null, spawn(getGoogleChromeBin(), args))
 }
 
-export function runChromeBrowsers (ports: number[] = [9222, 9223, 9224, 9225], callback: any) {
+export function runChromeBrowsers (ports: number[] = REMOTE_DEBUGGING_PORTS, callback: any) {
   const queue = []
   ports.forEach((port: number) => {
     queue.push(new Promise((resolve, reject) => {

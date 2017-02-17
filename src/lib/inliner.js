@@ -4,7 +4,7 @@
 import Inliner from 'inliner'
 import { createTmpServer } from './utils'
 
-export function inline (html: any, opts: any, callback: any) {
+export default function (html: any, opts: any, callback: any) {
   createTmpServer(html, opts, (err, server) => {
     if (err) {
       return callback(err)
