@@ -1,12 +1,9 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
-
-const app = require('../dist/app')
+import http from 'http'
 const debug = require('debug')('myapp:server')
-const http = require('http')
+
+import app from '../app'
 
 /**
  * Get port from environment and store in Express.
