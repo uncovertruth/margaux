@@ -3,6 +3,7 @@ module.exports = {
     '@uncovertruth/eslint-config-flowtype'
   ],
   'rules': {
-    'no-new': 1
+    'no-new': 1,
+    'no-console': 1
   }
 }
