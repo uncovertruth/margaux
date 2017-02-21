@@ -27,15 +27,15 @@
     "validator": "^6.1.0"
   },
   "devDependencies": {
-    "@uncovertruth/eslint-config-flowtype": "^0.1.0",
+    "@uncovertruth/eslint-config-flowtype": "^0.2.0",
     "babel-cli": "^6.23.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.23.0",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-preset-power-assert": "^1.0.0",
     "babel-register": "^6.23.0",
     "codecov": "^1.0.1",
-    "eslint": "^3.15.0",
-    "faker": "^3.1.0",
+    "eslint": "^3.16.0",
+    "faker": "^4.0.0",
     "flow-bin": "^0.39.0",
     "flow-typed": "^2.0.0",
     "mocha": "^3.1.2",
