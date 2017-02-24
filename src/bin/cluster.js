@@ -15,7 +15,7 @@ if (cluster.isMaster) {
     cluster.fork()
   })
   cluster.on('exit', (worker, code, signal) => {
-    warning(`worker died`, {extra: {pid: `${worker.process.pid} `}})
+    warning(`worker died`, {pid: `${worker.process.pid} `})
     cluster.fork()
   })
 } else {
