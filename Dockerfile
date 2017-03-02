@@ -52,6 +52,7 @@ ENV VIRTUALENV_BASE_DIR /usr/local/ap/venv
 RUN mkdir -p $VIRTUALENV_BASE_DIR \
   && $AP_DIR/python3/bin/pyvenv $VIRTUALENV_BASE_DIR/circus \
   && $VIRTUALENV_BASE_DIR/circus/bin/python -m ensurepip --upgrade \
+  && $VIRTUALENV_BASE_DIR/circus/bin/pip install --upgrade pip \
   && $VIRTUALENV_BASE_DIR/circus/bin/pip install circus
 
 RUN mkdir -p /var/log/margaux
