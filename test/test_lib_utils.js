@@ -5,9 +5,9 @@ import request from 'superagent'
 
 describe('utils', () => {
   const html = `<html><head></head><body>hello</body></html>`
+  const createTmpServer = require('../src/lib/utils').createTmpServer
 
   it('return server', (done) => {
-    const createTmpServer = require('../src/lib/utils').createTmpServer
     createTmpServer(html, {}, (err, server) => {
       if (err) {
         throw err
@@ -23,7 +23,6 @@ describe('utils', () => {
   })
 
   it('can specify accept language', (done) => {
-    const createTmpServer = require('../src/lib/utils').createTmpServer
     createTmpServer(html, {acceptLanguage: 'en'}, (err, server) => {
       if (err) {
         throw err
@@ -38,24 +37,25 @@ describe('utils', () => {
     })
   })
 
+  const getGoogleChromeBin = require('../src/lib/utils').getGoogleChromeBin
   it('return Google Chrome binary', function () {
-    const getGoogleChromeBin = require('../src/lib/utils').getGoogleChromeBin
     const chromeBinary = getGoogleChromeBin()
     const bin = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
     assert(chromeBinary, bin)
   })
 
-  it('run Google Chrome browser without ports', function () {
-    const runChromeBrowsers = require('../src/lib/utils').runChromeBrowsers
+  const runChromeBrowsers = require('../src/lib/utils').runChromeBrowsers
+  it('run Google Chrome browser without ports', done => {
     runChromeBrowsers([], (err) => {
-      assert(err === undefined)
+      assert(!err)
+      done()
     })
   })
 
-  it('run Google Chrome browser with ports', function () {
-    const runChromeBrowsers = require('../src/lib/utils').runChromeBrowsers
+  it('run Google Chrome browser with ports', done => {
     runChromeBrowsers([9222, 9223, 9224, 9225], (err) => {
-      assert(err === undefined)
+      assert(!err)
+      done()
     })
   })
 })

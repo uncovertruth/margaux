@@ -86,10 +86,10 @@ export function runChromeBrowsers (ports: number[] = REMOTE_DEBUGGING_PORTS, cal
   })
 }
 
-export function createTmpServer (html: any, opts: any, callback: any) {
+export function createTmpServer (html: string, opts: {acceptLanguage?: string}, cb: (err: ?Error, server: any) => void) {
   emptyPorts((err, ports) => {
     if (err) {
-      return callback(err)
+      return cb(err)
     }
 
     const acceptLanguage = opts.acceptLanguage || 'ja'
@@ -104,9 +104,9 @@ export function createTmpServer (html: any, opts: any, callback: any) {
 
     listenOneAnyPorts(server, ports, (err: null | Error, port: void) => {
       if (err) {
-        return callback(err)
+        return cb(err)
       }
-      callback(null, server)
+      cb(null, server)
     })
   })
 }

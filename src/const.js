@@ -1,6 +1,8 @@
 /* @flow */
 'use strict'
 
+export const COOKIE_EXPIRES = 10 * 1000
+export const USER_AGENT = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) CDP/47.0.2526.73 Safari/537.36`
 export const CHROME_CHECK_URL: ?string = process.env.NODE_WEBSNAPHOT_CHECK_TEXT
 export const CLOSE_TAB_TIMEOUT: number = parseInt(process.env.NODE_NEO_PAGE_CACHE_TAB_TIMEOUT, 10) || 30 * 1000
 export const MOUNT_CHECK_CONTENT: string = 'OK'

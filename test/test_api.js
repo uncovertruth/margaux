@@ -6,7 +6,7 @@ import fs from 'fs'
 import path from 'path'
 import remove from 'remove'
 
-describe('api', function () {
+describe.skip('api', function () {
   const api = require('../src/api').default
 
   let testUrlHost
