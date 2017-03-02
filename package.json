@@ -50,6 +50,9 @@
   "directories": {
     "test": "test"
   },
+  "engines": {
+    "node": ">=7.6"
+  },
   "homepage": "https://github.com/uncovertruth/margaux#readme",
   "keywords": [
     "chrome",
