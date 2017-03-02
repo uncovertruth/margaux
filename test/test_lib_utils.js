@@ -16,6 +16,7 @@ describe('utils', () => {
         if (err) {
           throw err
         }
+        console.log(res)
         assert.ok(res.headers['accept-language'] === 'ja')
         server.close(done)
       })
@@ -33,6 +34,21 @@ describe('utils', () => {
           throw err
         }
         assert.ok(res.headers['accept-language'] === 'en')
+        server.close(done)
+      })
+    })
+  })
+
+  it.only('confirm DOM in return value of server', (done) => {
+    utils.createTmpServer(html, {}, (err, server) => {
+      if (err) {
+        throw err
+      }
+      request.get('http://localhost:' + server.address().port).end((err, res) => {
+        if (err) {
+          throw err
+        }
+        assert.ok(res.DOM)
         server.close(done)
       })
     })
