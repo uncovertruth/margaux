@@ -9,16 +9,13 @@ const util = require('util')
 
 import { error } from './logger'
 
-type Callback = (err: Error | any, client: CDP) => void
-type Options = any
-
-export function create (host: 'localhost' | string, port: number, callback: Callback): void {
+export function create (host: 'localhost' | string, port: number, cb: (err: ?Error, client: ?CDP) => void): void {
   CDP.New({
     'host': host,
     'port': port
   }, (err, tab) => {
     if (err) {
-      return callback(err)
+      return cb(err)
     }
     CDP(
       {
@@ -35,19 +32,17 @@ export function create (host: 'localhost' | string, port: number, callback: Call
         } catch (err) {
           client.close()
         } finally {
-          callback(null, client)
+          cb(null, client)
         }
       }).on('error', err => {
         error(err)
-        callback(err)
+        cb(err)
       })
   })
 }
 
-export function navigate (client: CDP, url: string, callback: Callback) {
-  client.on('Page.loadEventFired', (result) => {
-    callback()
-  })
+export function navigate (client: CDP, url: string, cb: () => void) {
+  client.on('Page.loadEventFired', (result) => cb())
   client.Page.navigate({'url': url})
 }
 
@@ -122,7 +117,7 @@ type CookieOptions = {
   expires: number
 }
 
-export function getCookies (client: CDP, opts: Options, cb: Callback) {
+export function getCookies (client: CDP, opts: Object, cb: (err: ?Error, res: ?{message: string}) => void) {
   client.Network.getCookies((err, resp: {message: string}) => {
     if (err) {
       return cb(new Error(resp.message))
@@ -131,7 +126,7 @@ export function getCookies (client: CDP, opts: Options, cb: Callback) {
   })
 }
 
-export function setCookie (client: CDP, {cookieName, value, expires}: CookieOptions, cb: Callback) {
+export function setCookie (client: CDP, {cookieName, value, expires}: CookieOptions, cb: (err: ?Error, res: ?{message: string}) => void) {
   if (!cookieName) {
     return cb(new errors.ArgumentNullError('cookieName'))
   }

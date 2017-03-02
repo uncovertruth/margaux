@@ -162,7 +162,7 @@ describe('lib/margaux', () => {
       value: 12345,
       expires: COOKIE_EXPIRES
     }
-    margaux.setCookie(chrome, cookieOpts, (err) => {
+    margaux.setCookie(chrome, cookieOpts, (err: any) => {
       assert(err instanceof errors.ArgumentNullError)
       assert(err.message === 'Missing argument: cookieName')
     })
@@ -175,7 +175,7 @@ describe('lib/margaux', () => {
       value: '',
       expires: COOKIE_EXPIRES
     }
-    margaux.setCookie(chrome, cookieOpts, (err) => {
+    margaux.setCookie(chrome, cookieOpts, (err: any) => {
       assert(err instanceof errors.ArgumentNullError)
       assert(err.message === 'Missing argument: value')
     })
