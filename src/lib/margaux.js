@@ -169,7 +169,7 @@ export function deleteCookie (client: CDP, opts: {cookieName: string, url: strin
   })
 }
 
-export function extractViewport (client: CDP, cb: (err: ?Error) => void) {
+export function extractViewport (client: CDP, cb: (err: ?Error, res?: string) => void) {
   // viewportのmetaタグはこの3つとcontentの中身（viewportの定義）しかattributeがないと信じている。
   const unnecessary = ['name', 'viewport', 'content']
   client.DOM.getDocument(null, (err, {root, message}) => {
@@ -186,19 +186,18 @@ export function extractViewport (client: CDP, cb: (err: ?Error) => void) {
 
       Promise.all(nodeIds.map((nodeId) => {
         return new Promise((resolve, reject) => {
-          CDP.DOM.getAttributes({
+          client.DOM.getAttributes({
             nodeId: nodeId
-          }, (err, resp) => {
+          }, (err, {message, attributes}) => {
             if (err) {
-              reject(new Error(resp.message))
+              reject(new Error(message))
             }
-            const ar = resp['attributes'].map((x) => x.toLowerCase())
+            const ar = attributes.map((x) => x.toLowerCase())
             if (ar.indexOf('viewport') >= 0 && ar.indexOf('content') >= 0) {
               // viewportとcontentが存在するmetaタグから不要なものを除いたものがviewportの実体なはず
               const viewports = _.difference(ar, unnecessary)
               resolve(viewports.join(','))
             }
-            // マッチするものがなかった場合はnull返す
             resolve(null)
           })
         })
@@ -216,27 +215,27 @@ export function extractViewport (client: CDP, cb: (err: ?Error) => void) {
 }
 
 export function forceCharset (client: CDP, callback: (err: ?Error) => void) {
-  client.DOM.getDocument(null, (err, resp) => {
+  client.DOM.getDocument(null, (err, {root, message}) => {
     if (err) {
-      return callback(new Error(resp.message))
+      return callback(new Error(message))
     }
     client.DOM.querySelectorAll({
-      nodeId: resp.root.nodeId,
+      nodeId: root.nodeId,
       selector: 'meta'
-    }, (err, resp) => {
+    }, (err, {nodeIds, message}) => {
       if (err) {
-        return callback(new Error(resp.message))
+        return callback(new Error(message))
       }
 
-      Promise.all(resp.nodeIds.map((nodeId) => {
+      Promise.all(nodeIds.map((nodeId) => {
         return new Promise((resolve, reject) => {
-          CDP.DOM.getAttributes({
+          client.DOM.getAttributes({
             nodeId: nodeId
-          }, (err, {message}) => {
+          }, (err, {attributes, message}) => {
             if (err) {
               reject(new Error(message))
             }
-            const ar = resp['attributes'].map((x) => x.toLowerCase())
+            const ar = attributes.map((x) => x.toLowerCase())
             if (ar.indexOf('charset') >= 0) {
               client.DOM.setAttributeValue({
                 nodeId: nodeId,
@@ -382,7 +381,7 @@ export function convertLinkToAbsolutely (client: CDP, {baseURI, selector}: {base
 
       Promise.all(nodeIds.map(nodeId => {
         return new Promise((resolve, reject) => {
-          CDP.DOM.getAttributes({nodeId: nodeId}, (err, {attributes, message}) => {
+          client.DOM.getAttributes({nodeId: nodeId}, (err, {attributes, message}) => {
             if (err) {
               reject(new Error(message))
             }

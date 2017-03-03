@@ -124,7 +124,7 @@ describe('api', function () {
       })
   })
 
-  it.skip('returns html with viewport', done => {
+  it('returns html with viewport', done => {
     api.takeWebSnapshot(
       testUrlHost + testUrlWithViewport,
       {},
@@ -132,13 +132,13 @@ describe('api', function () {
       (err, url: any, viewport) => {
         assert(err === null)
         assert(url.length > 0)
-        assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
         assert(viewport === 'width=device-width,initial-scale=1')
+        assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
         done()
       })
   })
 
-  it.skip('returns html with js viewport', done => {
+  it('returns html with js viewport', done => {
     api.takeWebSnapshot(
       testUrlHost + testUrlWithJSViewport,
       {},
@@ -152,7 +152,7 @@ describe('api', function () {
       })
   })
 
-  it.skip('returns html with meta content charset ShiftJIS', done => {
+  it('returns html with meta content charset ShiftJIS', done => {
     api.takeWebSnapshot(
       testUrlHost + testUrlWithMetaContentCharsetShiftJIS,
       {},
@@ -168,7 +168,7 @@ describe('api', function () {
       })
   })
 
-  it.skip('returns html with meta charset ShiftJIS', done => {
+  it('returns html with meta charset ShiftJIS', done => {
     api.takeWebSnapshot(
       testUrlHost + testUrlWithMetaCharsetShiftJIS,
       {},
