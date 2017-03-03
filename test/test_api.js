@@ -1,5 +1,6 @@
 /* @flow */
 import { describe, it, before, after } from 'mocha'
+import { random, internet } from 'faker'
 import assert from 'assert'
 import http from 'http'
 import fs from 'fs'
@@ -34,6 +35,25 @@ describe('api', function () {
       </script>
     </head>
     <body>a</body>
+  </html>
+  `
+  const testUrlWithIframe = '/with-iframe-js/'
+  const testHtmlWithIframe = `
+  <!DOCTYPE html><html>
+    <head></head>
+    <body>
+      <iframe src="${internet.url()}" width="${random.number()}" height="${random.number()}" />
+    </body>
+  </html>
+  `
+
+  const testUrlWithLink = '/with-link-js/'
+  const testHtmlWithLink = `
+  <!DOCTYPE html><html>
+    <head></head>
+    <body>
+      <img src="${internet.url()}" />
+    </body>
   </html>
   `
 
@@ -95,6 +115,12 @@ describe('api', function () {
             break
           case testUrlWithMetaCharsetShiftJIS:
             res.end(testHtmlWithMetaCharsetShiftJIS)
+            break
+          case testUrlWithIframe:
+            res.end(testHtmlWithIframe)
+            break
+          case testUrlWithLink:
+            res.end(testHtmlWithLink)
             break
           default:
             res.end('')
@@ -180,6 +206,30 @@ describe('api', function () {
         const tmpBuf = fs.readFileSync(`${path.join(TEST_STORE_DIR, url)}`).toString()
         assert(tmpBuf.match('<meta name="keywords" content="fake charset=ShiftJIS">'))
         assert(tmpBuf.match('<meta charset="UTF-8">'))
+        done()
+      })
+  })
+
+  it('emptyIframes', done => {
+    api.takeWebSnapshot(
+      testUrlHost + testUrlWithIframe,
+      {},
+      TEST_STORE_DIR,
+      (err, res: any) => {
+        assert(!err)
+        assert(res)
+        done()
+      })
+  })
+
+  it('convertLinkToAbsolutely', done => {
+    api.takeWebSnapshot(
+      testUrlHost + testUrlWithLink,
+      {},
+      TEST_STORE_DIR,
+      (err, res: any) => {
+        assert(!err)
+        assert(res)
         done()
       })
   })

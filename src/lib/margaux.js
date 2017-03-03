@@ -390,7 +390,7 @@ export function convertLinkToAbsolutely (client: CDP, {baseURI, selector}: {base
               resolve()
             }
             const value = attributes[index + 1]
-            CDP.DOM.setAttributeValue({
+            client.DOM.setAttributeValue({
               nodeId: nodeId,
               name: attribute,
               value: u.resolve(baseURI, value)
