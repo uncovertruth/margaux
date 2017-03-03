@@ -15,14 +15,14 @@ describe('lib/margaux', () => {
   const margaux = require('../src/lib/margaux')
   const createTmpServer = promisify(require('../src/lib/utils').createTmpServer)
 
-  it.skip('close', done => {
+  it('close', done => {
     margaux.create(host, port, (err, client) => {
-      assert(!err)
+      assert(err === null)
       margaux.close(client, (err, res) => {
-        assert(!err)
-        assert(typeof res === 'string')
+        assert(err === null)
+        assert(res)
+        done()
       })
-      done()
     })
   })
 
@@ -87,14 +87,14 @@ describe('lib/margaux', () => {
   it('evaluate', done => {
     assert(typeof margaux.evaluate === 'function')
 
-    margaux.create(host, port, (err, client) => {
+    margaux.create(host, port, (err, client: any) => {
       assert(!err)
-      // client.ws.on('close', (result) => {
-      //   // 本来は1000の正常終了だったが、いつのバージョンからかChromeがwindow.closeだと異常終了を返すようになった。
-      //   // closeのテストではなく、evaluateのテストなので異常終了を正とする。
-      //   // 正常系では影響がないが、延々終わらない異常系でこの方式を使ってchromeを閉じているので問題がないわけではない。
-      //   assert.ok(result === 1006, '異常終了')
-      // })
+      client._ws.on('close', (result) => {
+        // 本来は1000の正常終了だったが、いつのバージョンからかChromeがwindow.closeだと異常終了を返すようになった。
+        // closeのテストではなく、evaluateのテストなので異常終了を正とする。
+        // 正常系では影響がないが、延々終わらない異常系でこの方式を使ってchromeを閉じているので問題がないわけではない。
+        assert(result === 1006, '異常終了')
+      })
 
       const expression = 'setTimeout(window.close,  5)'
       margaux.evaluate(client, expression, (err, result) => {

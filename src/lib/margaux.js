@@ -72,42 +72,42 @@ export function setUserAgentOverride (client: CDP, { userAgent }: { userAgent: s
   })
 }
 
-export function setHeaders (client: CDP, _headers: string, callback: (err: ?Error) => void) {
+export function setHeaders (client: CDP, _headers: string, cb: (err: ?Error) => void) {
   client.Network.setExtraHTTPHeaders({
     headers: _headers // hash
   }, (err, {message}) => {
     if (err) {
-      return callback(new Error(message))
+      return cb(new Error(message))
     }
-    callback()
+    cb()
   })
 }
 
-export function getOuterHTML (CDP: CDP, callback: (err: ?Error, outerHtml?: string) => void) {
-  CDP.DOM.getDocument(null, (err, {message, root}) => {
+export function getOuterHTML (client: CDP, cb: (err: ?Error, outerHtml?: string) => void) {
+  client.DOM.getDocument(null, (err, {message, root}) => {
     if (err) {
-      return callback(new Error(message))
+      return cb(new Error(message))
     }
 
-    CDP.DOM.getOuterHTML({nodeId: root.nodeId}, (err, {message, outerHTML}) => {
+    client.DOM.getOuterHTML({nodeId: root.nodeId}, (err, {message, outerHTML}) => {
       if (err) {
-        return callback(new Error(message))
+        return cb(new Error(message))
       }
-      callback(null, outerHTML)
+      cb(null, outerHTML)
     })
   })
 }
 
-export function evaluate (client: CDP, expression: string, callback: (err: ?Error, res: ?{message: string}) => void) {
+export function evaluate (client: CDP, expression: string, cb: (err: ?Error, res: ?{message: string}) => void) {
   // XXX: expression の validate ができないか考える
   // const expression = 'setTimeout(window.close, 3 * 1000)';
   client.Runtime.evaluate({
     'expression': expression
   }, (err, resp) => {
     if (err) {
-      return callback(new Error(resp.message))
+      return cb(new Error(resp.message))
     }
-    callback(null, resp)
+    cb(null, resp)
   })
 }
 
@@ -276,11 +276,11 @@ export function forceCharset (client: CDP, callback: (err: ?Error) => void) {
 }
 
 export function close (client: CDP, cb: (err: ?Error, res: string) => void) {
-  const {host, port, chooseTab} = client
-  client.Close({
+  const {host, port, tab} = client
+  CDP.Close({
     host: host,
     port: port,
-    id: chooseTab.id
+    id: tab.id
   }, (err) => {
     if (err) {
       return error(err)

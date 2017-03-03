@@ -180,7 +180,7 @@ Api.prototype.ping = function (mountCheckFile, mountCheckContent, chromeCheckURL
     yield navigate(chrome, chromeCheckURL)
     wait(waitTime)
 
-    // const html = yield getOuterHTML(chrome)  // TODO remove
+    yield getOuterHTML(chrome)
     yield close(chrome)
     callback()
   }).catch(callback)
