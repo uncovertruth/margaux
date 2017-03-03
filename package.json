@@ -1,7 +1,7 @@
 {
   "name": "margaux",
   "description": "著名なボルドーワインのシャトーの名称、および同シャトーの生産するワインの銘柄の名称である。「ワインの女王」と呼ばれるボルドーワインの中でも、シャトー・マルゴーはしばしば「最も女性的なワイン」とも形容される。",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "UNCOVER TRUTH Inc.",
   "bugs": {
     "url": "https://github.com/uncovertruth/margaux/pulls"
