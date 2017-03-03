@@ -4,7 +4,7 @@
     "transform-flow-strip-types"
   ],
   "env": {
-    "test": {
+    "development": {
       "presets": [
         "power-assert"
       ]
