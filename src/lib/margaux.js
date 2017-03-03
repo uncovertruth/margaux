@@ -18,11 +18,7 @@ export function create (host: 'localhost' | string, port: number, cb: (err: ?Err
       return cb(err)
     }
     CDP(
-      {
-        'host': host,
-        'port': port,
-        'chooseTab': tab
-      },
+      { host, port, tab },
       async client => {
         const { Page, DOM, Network } = client
         try {
