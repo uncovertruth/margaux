@@ -58,11 +58,16 @@ Api.prototype.parseParameters = function (params) {
   }
 }
 
-Api.prototype.takeWebSnapshot = function (url: string, params, storeBaseDir, callback) {
+type TakeWebSnapshotOptions = {
+  saveDir?: string,
+  cookies?: string
+}
+
+Api.prototype.takeWebSnapshot = function (url: string, params: TakeWebSnapshotOptions, storeBaseDir: string, cb: (err: ?Error, url?: string, viewport?: string) => void) {
   function generateKey () { return uuid.v4().replace(/-/g, '') };
 
   if (!validator.isURL(url)) {
-    return callback(new errors.ArgumentError('url'))
+    return cb(new errors.ArgumentError('url'))
   }
 
   const opts = this.parseParameters(params)
@@ -75,18 +80,17 @@ Api.prototype.takeWebSnapshot = function (url: string, params, storeBaseDir, cal
     uniquePath = libPath.generateStorePath(opts.saveDir, generateKey())
     storePath = path.join(storeBaseDir, uniquePath)
     if (libPath.isFileExists(storePath)) {
-      return callback(errors.AlreadyInUseError(storePath))
+      return cb(errors.AlreadyInUseError(storePath))
     }
   }
   // ディレクトリトラバーサル対策。プロジェクト横断は防げない（特に問題にはならないはず）
   if (storePath.indexOf(storeBaseDir) !== 0) {
-    return callback(errors.NotPermittedError(storePath))
+    return cb(errors.NotPermittedError(storePath))
   }
 
   const host = 'localhost'
   const index = _.random(0, REMOTE_DEBUGGING_PORTS.length - 1)
   const port = REMOTE_DEBUGGING_PORTS[index]
-  // console.log('PORT:' + port)
   const waitTime = opts.waitTime || 1000
 
   co(function * () {
@@ -118,10 +122,9 @@ Api.prototype.takeWebSnapshot = function (url: string, params, storeBaseDir, cal
     // Cookieが渡されていたら、一度ページをロードしてからcookieをセットして、再度ページをロードする
     if (params.cookies) {
       const cookies = params.cookies.split(';').map((x) => { return x.split('=') })
-      // console.log(cookies);
       cookies.forEach((cookie, idx, ar) => {
         if (cookie.length !== 2) {
-          return callback(exports.ArgumentError(cookies))
+          return cb(exports.ArgumentError(cookies))
         }
         // TODO yield ?
         // console.log('set cookie');
@@ -151,8 +154,8 @@ Api.prototype.takeWebSnapshot = function (url: string, params, storeBaseDir, cal
     const inlinedHtml = yield inline(html, {baseUrl: url})
     yield saveFile(storePath, inlinedHtml)
 
-    callback(null, uniquePath, viewport)
-  }).catch(callback)
+    cb(null, uniquePath, viewport)
+  }).catch(cb)
 }
 
 Api.prototype.ping = function (mountCheckFile, mountCheckContent, chromeCheckURL, callback) {

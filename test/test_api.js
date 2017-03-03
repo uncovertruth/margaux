@@ -6,7 +6,7 @@ import fs from 'fs'
 import path from 'path'
 import remove from 'remove'
 
-describe.skip('api', function () {
+describe('api', function () {
   const api = require('../src/api').default
 
   let testUrlHost
@@ -106,38 +106,45 @@ describe.skip('api', function () {
     })
   })
 
-  it('returns html without viewport', function (done) {
-    api.takeWebSnapshot(testUrlHost + testUrlWithoutViewport, {},
-      TEST_STORE_DIR, function (err, url, viewport) {
-        if (err) {
-          assert(err === null)
-        }
+  after(() => {
+    remove.removeSync(TEST_STORE_DIR)
+  })
+
+  it('returns html without viewport', done => {
+    api.takeWebSnapshot(
+      testUrlHost + testUrlWithoutViewport,
+      {},
+      TEST_STORE_DIR,
+      (err, url: any, viewport) => {
+        assert(err === null)
         assert(url.length > 0)
         assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
-        assert.equal(viewport, '')
+        assert(viewport === '')
         done()
       })
   })
 
-  it('returns html with viewport', function (done) {
-    api.takeWebSnapshot(testUrlHost + testUrlWithViewport, {},
-      TEST_STORE_DIR, function (err, url, viewport) {
-        if (err) {
-          assert(err === null)
-        }
+  it.skip('returns html with viewport', done => {
+    api.takeWebSnapshot(
+      testUrlHost + testUrlWithViewport,
+      {},
+      TEST_STORE_DIR,
+      (err, url: any, viewport) => {
+        assert(err === null)
         assert(url.length > 0)
         assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
-        assert.equal(viewport, 'width=device-width,initial-scale=1')
+        assert(viewport === 'width=device-width,initial-scale=1')
         done()
       })
   })
 
-  it('returns html with js viewport', function (done) {
-    api.takeWebSnapshot(testUrlHost + testUrlWithJSViewport, {},
-      TEST_STORE_DIR, function (err, url, viewport) {
-        if (err) {
-          assert(err === null)
-        }
+  it.skip('returns html with js viewport', done => {
+    api.takeWebSnapshot(
+      testUrlHost + testUrlWithJSViewport,
+      {},
+      TEST_STORE_DIR,
+      (err, url: any, viewport) => {
+        assert(err === null)
         assert(url.length > 0)
         assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
         assert.equal(viewport, 'width=device-width,initial-scale=1.0')
@@ -145,12 +152,13 @@ describe.skip('api', function () {
       })
   })
 
-  it('returns html with meta content charset ShiftJIS', function (done) {
-    api.takeWebSnapshot(testUrlHost + testUrlWithMetaContentCharsetShiftJIS, {},
-      TEST_STORE_DIR, function (err, url, viewport) {
-        if (err) {
-          assert(err === null)
-        }
+  it.skip('returns html with meta content charset ShiftJIS', done => {
+    api.takeWebSnapshot(
+      testUrlHost + testUrlWithMetaContentCharsetShiftJIS,
+      {},
+      TEST_STORE_DIR,
+      (err, url: any, viewport) => {
+        assert(err === null)
         assert(url.length > 0)
         assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
         const tmpBuf = fs.readFileSync(`${path.join(TEST_STORE_DIR, url)}`).toString()
@@ -160,12 +168,13 @@ describe.skip('api', function () {
       })
   })
 
-  it('returns html with meta charset ShiftJIS', function (done) {
-    api.takeWebSnapshot(testUrlHost + testUrlWithMetaCharsetShiftJIS, {},
-      TEST_STORE_DIR, function (err, url, viewport) {
-        if (err) {
-          assert(err === null)
-        }
+  it.skip('returns html with meta charset ShiftJIS', done => {
+    api.takeWebSnapshot(
+      testUrlHost + testUrlWithMetaCharsetShiftJIS,
+      {},
+      TEST_STORE_DIR,
+      (err, url: any, viewport) => {
+        assert(err === null)
         assert(url.length > 0)
         assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
         const tmpBuf = fs.readFileSync(`${path.join(TEST_STORE_DIR, url)}`).toString()
@@ -214,16 +223,13 @@ describe.skip('api', function () {
 
   it('raises errors.NotPermittedError when directory traversal.',
     function (done) {
-      api.takeWebSnapshot(testUrlHost + testUrlWithJSViewport,
+      api.takeWebSnapshot(
+        testUrlHost + testUrlWithJSViewport,
         {saveDir: '../../a'},
-      TEST_STORE_DIR, function (err, url, viewport) {
-        assert.equal(err.name, 'NotPermittedError')
-        done()
-      })
+        TEST_STORE_DIR,
+        (err: any, url, viewport) => {
+          assert(err.name === 'NotPermittedError')
+          done()
+        })
     })
-
-  after(function (done) {
-    remove.removeSync(TEST_STORE_DIR)
-    done()
-  })
 })

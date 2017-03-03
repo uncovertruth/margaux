@@ -39,7 +39,7 @@ app.post('/', (req, res, next) => {
   const url = req.body.url
   const opts = api.parseParameters(req.body)
 
-  api.takeWebSnapshot(url, opts, storeBaseDir, (err, url, viewport) => {
+  api.takeWebSnapshot(url, opts, storeBaseDir, (err: any, url, viewport) => {
     if (err) {
       err.status = 500
       return next(err)
