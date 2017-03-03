@@ -12,7 +12,14 @@ import uuid from 'uuid'
 import * as margaux from './lib/margaux'
 import inliner from './lib/inliner'
 import * as libPath from './lib/path'
-import { REMOTE_DEBUGGING_PORTS, CLOSE_TAB_TIMEOUT } from './const'
+import {
+  DEFAULT_HEIGHT,
+  DEFAULT_WIDTH,
+  DEFAULT_WAIT_TIME,
+  USER_AGENT,
+  REMOTE_DEBUGGING_PORTS,
+  CLOSE_TAB_TIMEOUT
+} from './const'
 
 const create = promisify(margaux.create)
 const evaluate = promisify(margaux.evaluate)
@@ -39,27 +46,28 @@ const wait = (delay) => {
 function Api () {}
 
 Api.prototype.parseParameters = function (params) {
-  const userAgent = params.userAgent ||
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/' +
-  '537.36 (KHTML, like Gecko) Chrome/47.0.2526.73 Safari/537.36'
-
   return {
     referer: params.referer || '',
-    width: parseInt(params.width, 10) || 1024,
-    height: parseInt(params.height, 10) || 768,
-    waitTime: params.waitTime || 10 * 1000,
-    userAgent: userAgent,
+    width: parseInt(params.width, 10) || DEFAULT_WIDTH,
+    height: parseInt(params.height, 10) || DEFAULT_HEIGHT,
+    waitTime: params.waitTime || DEFAULT_WAIT_TIME,
+    userAgent: params.userAgent || USER_AGENT,
     acceptLanguage: params.acceptLanguage || 'ja', // 'ハイフン嫌なのでラクダで'
     saveDir: params.saveDir || 'x',  // project_id を想定
     cookies: params.cookies || '' // 相手先サーバの文字エンコーディング(utf8,sjis,etc..)でURLエンコードずみのkey1=value1;key2=value2で送られてくる想定。
   }
 }
 
-Api.prototype.takeWebSnapshot = function (url, params, storeBaseDir, callback) {
+type TakeWebSnapshotOptions = {
+  saveDir?: string,
+  cookies?: string
+}
+
+Api.prototype.takeWebSnapshot = function (url: string, params: TakeWebSnapshotOptions, storeBaseDir: string, cb: (err: ?Error, url?: string, viewport?: string) => void) {
   function generateKey () { return uuid.v4().replace(/-/g, '') };
 
   if (!validator.isURL(url)) {
-    return callback(new errors.ArgumentError('url'))
+    return cb(new errors.ArgumentError('url'))
   }
 
   const opts = this.parseParameters(params)
@@ -72,18 +80,17 @@ Api.prototype.takeWebSnapshot = function (url, params, storeBaseDir, callback) {
     uniquePath = libPath.generateStorePath(opts.saveDir, generateKey())
     storePath = path.join(storeBaseDir, uniquePath)
     if (libPath.isFileExists(storePath)) {
-      return callback(errors.AlreadyInUseError(storePath))
+      return cb(errors.AlreadyInUseError(storePath))
     }
   }
   // ディレクトリトラバーサル対策。プロジェクト横断は防げない（特に問題にはならないはず）
   if (storePath.indexOf(storeBaseDir) !== 0) {
-    return callback(errors.NotPermittedError(storePath))
+    return cb(errors.NotPermittedError(storePath))
   }
 
   const host = 'localhost'
   const index = _.random(0, REMOTE_DEBUGGING_PORTS.length - 1)
   const port = REMOTE_DEBUGGING_PORTS[index]
-  // console.log('PORT:' + port)
   const waitTime = opts.waitTime || 1000
 
   co(function * () {
@@ -115,10 +122,9 @@ Api.prototype.takeWebSnapshot = function (url, params, storeBaseDir, callback) {
     // Cookieが渡されていたら、一度ページをロードしてからcookieをセットして、再度ページをロードする
     if (params.cookies) {
       const cookies = params.cookies.split(';').map((x) => { return x.split('=') })
-      // console.log(cookies);
       cookies.forEach((cookie, idx, ar) => {
         if (cookie.length !== 2) {
-          return callback(exports.ArgumentError(cookies))
+          return cb(exports.ArgumentError(cookies))
         }
         // TODO yield ?
         // console.log('set cookie');
@@ -148,8 +154,8 @@ Api.prototype.takeWebSnapshot = function (url, params, storeBaseDir, callback) {
     const inlinedHtml = yield inline(html, {baseUrl: url})
     yield saveFile(storePath, inlinedHtml)
 
-    callback(null, uniquePath, viewport)
-  }).catch(callback)
+    cb(null, uniquePath, viewport)
+  }).catch(cb)
 }
 
 Api.prototype.ping = function (mountCheckFile, mountCheckContent, chromeCheckURL, callback) {
@@ -177,7 +183,7 @@ Api.prototype.ping = function (mountCheckFile, mountCheckContent, chromeCheckURL
     yield navigate(chrome, chromeCheckURL)
     wait(waitTime)
 
-    // const html = yield getOuterHTML(chrome)  // TODO remove
+    yield getOuterHTML(chrome)
     yield close(chrome)
     callback()
   }).catch(callback)

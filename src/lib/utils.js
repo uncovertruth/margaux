@@ -9,7 +9,7 @@ import os from 'os'
 import promisify from 'es6-promisify'
 import co from 'co'
 
-import { warning } from './logger'
+import { error, warning } from './logger'
 import { REMOTE_DEBUGGING_PORTS } from '../const'
 
 export function getGoogleChromeBin (): string {
@@ -67,7 +67,7 @@ export function runChromeWithRemoteDebuggingPort (remoteDebuggingPort: number, c
   return callback(null, spawn(getGoogleChromeBin(), args))
 }
 
-export function runChromeBrowsers (ports: number[] = REMOTE_DEBUGGING_PORTS, callback: any) {
+export function runChromeBrowsers (ports: number[] = REMOTE_DEBUGGING_PORTS, cb: (err: ?Error, res: any) => void = (err, res) => { if (err) { error(err) } }) {
   const queue = []
   ports.forEach((port: number) => {
     queue.push(new Promise((resolve, reject) => {
@@ -80,16 +80,16 @@ export function runChromeBrowsers (ports: number[] = REMOTE_DEBUGGING_PORTS, cal
     }))
   })
   Promise.all(queue).then((results) => {
-    callback(null, results)
+    cb(null, results)
   }).catch((err) => {
-    callback(err)
+    cb(err)
   })
 }
 
-export function createTmpServer (html: any, opts: any, callback: any) {
+export function createTmpServer (html: string, opts: {acceptLanguage?: string}, cb: (err: ?Error, server: any) => void) {
   emptyPorts((err, ports) => {
     if (err) {
-      return callback(err)
+      return cb(err)
     }
 
     const acceptLanguage = opts.acceptLanguage || 'ja'
@@ -104,9 +104,9 @@ export function createTmpServer (html: any, opts: any, callback: any) {
 
     listenOneAnyPorts(server, ports, (err: null | Error, port: void) => {
       if (err) {
-        return callback(err)
+        return cb(err)
       }
-      callback(null, server)
+      cb(null, server)
     })
   })
 }

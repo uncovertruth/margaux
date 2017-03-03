@@ -1,30 +1,30 @@
 {
   "name": "margaux",
   "description": "著名なボルドーワインのシャトーの名称、および同シャトーの生産するワインの銘柄の名称である。「ワインの女王」と呼ばれるボルドーワインの中でも、シャトー・マルゴーはしばしば「最も女性的なワイン」とも形容される。",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "UNCOVER TRUTH Inc.",
   "bugs": {
     "url": "https://github.com/uncovertruth/margaux/pulls"
   },
   "dependencies": {
-    "body-parser": "^1.16.1",
-    "chrome-remote-interface": "^0.15.1",
+    "body-parser": "^1.17.0",
+    "chrome-remote-interface": "^0.18.0",
     "cluster": "^0.7.7",
     "co": "^4.6.0",
     "commander": "^2.9.0",
     "common-errors": "^1.0.0",
     "cookie-parser": "^1.4.3",
     "es6-promisify": "^5.0.0",
-    "express": "^4.14.1",
+    "express": "^4.15.0",
     "inliner": "^1.10.2",
     "lodash": "^4.16.4",
     "mkdirp": "^0.5.1",
     "moment": "^2.15.2",
     "morgan": "^1.8.1",
     "portastic": "^1.0.1",
-    "raven": "^1.1.2",
+    "raven": "^1.1.3",
     "uuid": "^3.0.1",
-    "validator": "^6.1.0"
+    "validator": "^7.0.0"
   },
   "devDependencies": {
     "@uncovertruth/eslint-config-flowtype": "^0.2.0",
@@ -34,6 +34,7 @@
     "babel-preset-power-assert": "^1.0.0",
     "babel-register": "^6.23.0",
     "codecov": "^1.0.1",
+    "cross-env": "^3.1.4",
     "eslint": "^3.16.1",
     "faker": "^4.1.0",
     "flow-bin": "^0.40.0",
@@ -43,12 +44,15 @@
     "nyc": "^10.1.2",
     "power-assert": "^1.4.1",
     "remove": "^0.1.5",
-    "rimraf": "^2.6.0",
+    "rimraf": "^2.6.1",
     "superagent": "^3.5.0",
     "supertest": "^3.0.0"
   },
   "directories": {
     "test": "test"
+  },
+  "engines": {
+    "node": ">=7.6"
   },
   "homepage": "https://github.com/uncovertruth/margaux#readme",
   "keywords": [
@@ -63,10 +67,10 @@
     "url": "git+https://github.com/uncovertruth/margaux.git"
   },
   "scripts": {
-    "build": "babel src -d dist",
+    "build": "cross-env NODE_ENV=production babel src -d dist",
     "clean": "rimraf dist coverage",
     "codecov": "nyc report --reporter=lcov > coverage.lcov && codecov",
-    "dev": "NODE_ENV=development supervisor ./dist/bin/www.js",
+    "dev": "cross-env NODE_ENV=development supervisor ./dist/bin/www.js",
     "lint": "npm-run-all -p lint:*",
     "lint:es": "eslint . --cache",
     "lint:flow": "flow",

@@ -1,265 +1,133 @@
 /* @flow */
 'use strict'
 
-const Chrome = require('chrome-remote-interface')
+const CDP = require('chrome-remote-interface')
 const errors = require('common-errors')
 const u = require('url')
 const _ = require('lodash')
 const util = require('util')
 
-type Callback = any // TODO
-type Options = any // TODO
+import { error } from './logger'
 
-export function create (host: string, port: number, callback: Callback) {
-  Chrome.New({
+export function create (host: 'localhost' | string, port: number, cb: (err: ?Error, client: ?CDP) => void): void {
+  CDP.New({
     'host': host,
     'port': port
   }, (err, tab) => {
     if (err) {
-      return callback(err)
+      return cb(err)
     }
-    Chrome({
-      'host': host,
-      'port': port,
-      'chooseTab': tab
-    }).then(chrome => {
-      chrome.Page.enable() // Page の Event を察知するようにする
-      chrome.DOM.enable()
-      chrome.Network.enable() // これないとUAの上書きできない
-      callback(null, chrome)
-    }).catch(err => {
-      callback(err)
-    })
+    CDP(
+      { host, port, tab },
+      async client => {
+        const { Page, DOM, Network } = client
+        try {
+          await Page.enable() // Page の Event を察知するようにする
+          await DOM.enable()
+          await Network.enable() // これないとUAの上書きできない
+        } catch (err) {
+          client.close()
+        } finally {
+          cb(null, client)
+        }
+      }).on('error', err => {
+        error(err)
+        cb(err)
+      })
   })
 }
 
-export function navigate (chrome: Chrome, url: string, callback: Callback) {
-  chrome.on('Page.loadEventFired', (result) => {
-    callback()
-  })
-  chrome.Page.navigate({'url': url})
+export function navigate (client: CDP, url: string, cb: () => void) {
+  client.on('Page.loadEventFired', (result) => cb())
+  client.Page.navigate({'url': url})
 }
 
-export function close (chrome: Chrome, callback: Callback) {
-  Chrome.Close({
-    host: chrome.host,
-    port: chrome.port,
-    id: chrome.chooseTab.id
-  }, (err) => {
-    // クライアント側の websocket を終了
-    chrome.close()
-    callback(err)
-  })
-}
-
-export function setDeviceMetricsOver (chrome: Chrome, opts: Options, callback: Callback) {
-  const width = opts.width || 1024
-  const height = opts.height || 768
-
-  chrome.Page.setDeviceMetricsOverride({
+export function setDeviceMetricsOver (client: CDP, {width, height}: {width: number, height: number}, cb: (err: ?Error) => void) {
+  client.Page.setDeviceMetricsOverride({
     width: width,
     height: height,
     deviceScaleFactor: 1,
     mobile: false,
     fitWindow: false
-  }, function (err, resp) {
+  }, (err, {message}) => {
     if (err) {
-      return callback(new Error(resp.message))
+      return cb(new Error(message))
     }
-    callback()
+    cb()
   })
 }
 
-export function setUserAgentOverride (chrome: Chrome, opts: Options, callback: Callback) {
-  const userAgent = opts.userAgent ||
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/' +
-    '537.36 (KHTML, like Gecko) Chrome/47.0.2526.73 Safari/537.36'
-
-  chrome.Network.setUserAgentOverride({
+export function setUserAgentOverride (client: CDP, { userAgent }: { userAgent: string }, cb: (err: ?Error) => void) {
+  client.Network.setUserAgentOverride({
     userAgent: userAgent
-  }, (err, resp) => {
+  }, (err, {message}) => {
     if (err) {
-      return callback(new Error(resp.message))
+      return cb(new Error(message))
     }
-    callback()
+    cb()
   })
 }
 
-export function setHeaders (chrome: Chrome, _headers: string, callback: Callback) {
-  chrome.Network.setExtraHTTPHeaders({
+export function setHeaders (client: CDP, _headers: string, cb: (err: ?Error) => void) {
+  client.Network.setExtraHTTPHeaders({
     headers: _headers // hash
-  }, (err, resp) => {
+  }, (err, {message}) => {
     if (err) {
-      return callback(new Error(resp.message))
+      return cb(new Error(message))
     }
-    callback()
+    cb()
   })
 }
 
-export function getOuterHTML (chrome: Chrome, callback: Callback) {
-  chrome.DOM.getDocument(null, (err, resp) => {
+export function getOuterHTML (client: CDP, cb: (err: ?Error, outerHtml?: string) => void) {
+  client.DOM.getDocument(null, (err, {message, root}) => {
     if (err) {
-      return callback(new Error(resp.message))
+      return cb(new Error(message))
     }
 
-    chrome.DOM.getOuterHTML({nodeId: resp.root.nodeId}, (err, resp) => {
+    client.DOM.getOuterHTML({nodeId: root.nodeId}, (err, {message, outerHTML}) => {
       if (err) {
-        return callback(new Error(resp.message))
+        return cb(new Error(message))
       }
-      callback(null, resp.outerHTML)
+      cb(null, outerHTML)
     })
   })
 }
 
-export function removeScripts (chrome: Chrome, callback: Callback) {
-  chrome.DOM.getDocument(null, (err, resp) => {
-    if (err) {
-      return callback(new Error(resp.message))
-    }
-
-    // XXX: 要件達成後以下の頻出処理を上手く関数にまとめる
-    chrome.DOM.querySelectorAll({
-      nodeId: resp.root.nodeId,
-      selector: 'script'
-    }, (err, resp) => {
-      if (err) {
-        return callback(new Error(resp.message))
-      }
-
-      Promise.all(resp.nodeIds.map((nodeId) => {
-        return new Promise((resolve, reject) => {
-          chrome.DOM.removeNode({
-            nodeId: nodeId
-          }, (err, resp) => {
-            if (err) {
-              reject(new Error(resp.message))
-            }
-            resolve()
-          })
-        })
-      })).then((result) => callback()).catch(callback)
-    })
-  })
-}
-
-export function emptyIframes (chrome: Chrome, callback: Callback) {
-  chrome.DOM.getDocument(null, (err, resp) => {
-    if (err) {
-      return callback(new Error(resp.message))
-    }
-
-    chrome.DOM.querySelectorAll({
-      nodeId: resp.root.nodeId,
-      selector: 'iframe'
-    }, (err, resp) => {
-      if (err) {
-        return callback(new Error(resp.message))
-      }
-
-      Promise.all(resp.nodeIds.map((nodeId) => {
-        return new Promise((resolve, reject) => {
-          chrome.DOM.setAttributeValue({
-            nodeId: nodeId,
-            name: 'src',
-            value: ''
-          }, (err, resp) => {
-            if (err) {
-              reject(new Error(resp.message))
-            }
-            resolve()
-          })
-        })
-      })).then((result) => callback()).catch(callback)
-    })
-  })
-}
-
-export function evaluate (chrome: Chrome, expression: any, callback: Callback) {
+export function evaluate (client: CDP, expression: string, cb: (err: ?Error, res: ?{message: string}) => void) {
   // XXX: expression の validate ができないか考える
   // const expression = 'setTimeout(window.close, 3 * 1000)';
-  chrome.Runtime.evaluate({
+  client.Runtime.evaluate({
     'expression': expression
   }, (err, resp) => {
     if (err) {
-      return callback(new Error(resp.message))
+      return cb(new Error(resp.message))
     }
-    callback(null, resp)
+    cb(null, resp)
   })
 }
 
-export function convertLinkToAbsolutely (chrome: Chrome, opts: Options, callback: Callback) {
-  const baseURI = opts.baseURI
-  const selector = opts.selector
-  const attribute = {'img': 'src', 'link': 'href'}[selector]
+type CookieOptions = {
+  cookieName: string,
+  value: string | number,
+  expires: number
+}
 
-  if (!attribute) {
-    return callback(new errors.ArgumentNullError(selector))
-  }
-
-  chrome.DOM.getDocument(null, (err, resp) => {
+export function getCookies (client: CDP, opts: Object, cb: (err: ?Error, res: ?{message: string}) => void) {
+  client.Network.getCookies((err, resp: {message: string}) => {
     if (err) {
-      return callback(new Error(resp.message))
+      return cb(new Error(resp.message))
     }
-
-    chrome.DOM.querySelectorAll({
-      nodeId: resp.root.nodeId,
-      selector: selector
-    }, (err, resp) => {
-      if (err) {
-        return callback(new Error(resp.message))
-      }
-
-      Promise.all(resp.nodeIds.map(function (nodeId) {
-        return new Promise(function (resolve, reject) {
-          chrome.DOM.getAttributes({nodeId: nodeId}, function (err, resp) {
-            if (err) {
-              reject(new Error(resp.message))
-            }
-            const index = resp.attributes.indexOf(attribute)
-            if (index === -1) {
-              resolve()
-            }
-            const value = resp.attributes[index + 1]
-            chrome.DOM.setAttributeValue({
-              nodeId: nodeId,
-              name: attribute,
-              value: u.resolve(baseURI, value)
-            }, function (err, resp) {
-              if (err) {
-                reject(new Error(resp))
-              }
-              resolve()
-            })
-          })
-        })
-      })).then(function () {
-        callback()
-      }).catch(function (err) {
-        callback(err)
-      })
-    })
+    cb(null, resp)
   })
 }
 
-export function getCookies (chrome: Chrome, opts: Options, callback: Callback) {
-  chrome.Network.getCookies((err, resp) => {
-    if (err) {
-      return callback(new Error(resp.message))
-    }
-    callback(null, resp)
-  })
-}
-
-export function setCookie (chrome: Chrome, opts: Options, callback: Callback) {
-  const cookieName = opts.cookieName
-  const value = opts.value
-  const expires = opts.expires || 10 * 1000
-
+export function setCookie (client: CDP, {cookieName, value, expires}: CookieOptions, cb: (err: ?Error, res: ?{message: string}) => void) {
   if (!cookieName) {
-    return callback(new errors.ArgumentNullError('cookieName'))
+    return cb(new errors.ArgumentNullError('cookieName'))
   }
   if (!value) {
-    return callback(new errors.ArgumentNullError('value'))
+    return cb(new errors.ArgumentNullError('value'))
   }
 
   const formattedExpires = new Date(
@@ -273,101 +141,99 @@ export function setCookie (chrome: Chrome, opts: Options, callback: Callback) {
     formattedExpires
   )
 
-  chrome.Runtime.evaluate({'expression': expression}, (err, resp) => {
+  evaluate(client, expression, (err, res: any) => {
     if (err) {
-      return callback(resp.message)
+      return cb(res.message)
     }
-    callback(null, resp)
+    cb(null, res)
   })
 }
 
-export function deleteCookie (chrome: Chrome, opts: Options, callback: Callback) {
+export function deleteCookie (client: CDP, opts: {cookieName: string, url: string}, cb: (err: ?Error, res: ?{message: string}) => void) {
   if (!opts.cookieName) {
-    return callback(new errors.ArgumentNullError('cookieName'))
+    return cb(new errors.ArgumentNullError('cookieName'))
   }
   if (!opts.url) {
-    return callback(new errors.ArgumentNullError('url'))
+    return cb(new errors.ArgumentNullError('url'))
   }
 
-  chrome.Network.deleteCookie(opts, (err, resp) => {
+  client.Network.deleteCookie(opts, (err, resp) => {
     if (err) {
-      return callback(new Error(resp.message))
+      return cb(new Error(resp.message))
     }
-    callback(null, resp)
+    cb(null, resp)
   })
 }
 
-export function extractViewport (chrome: Chrome, callback: Callback) {
+export function extractViewport (client: CDP, cb: (err: ?Error, res?: string) => void) {
   // viewportのmetaタグはこの3つとcontentの中身（viewportの定義）しかattributeがないと信じている。
   const unnecessary = ['name', 'viewport', 'content']
-  chrome.DOM.getDocument(null, (err, resp) => {
+  client.DOM.getDocument(null, (err, {root, message}) => {
     if (err) {
-      return callback(new Error(resp.message))
+      return cb(new Error(message))
     }
-    chrome.DOM.querySelectorAll({
-      nodeId: resp.root.nodeId,
+    client.DOM.querySelectorAll({
+      nodeId: root.nodeId,
       selector: 'meta'
-    }, (err, resp) => {
+    }, (err, {nodeIds, message}) => {
       if (err) {
-        return callback(new Error(resp.message))
+        return cb(new Error(message))
       }
 
-      Promise.all(resp.nodeIds.map((nodeId) => {
+      Promise.all(nodeIds.map((nodeId) => {
         return new Promise((resolve, reject) => {
-          chrome.DOM.getAttributes({
+          client.DOM.getAttributes({
             nodeId: nodeId
-          }, (err, resp) => {
+          }, (err, {message, attributes}) => {
             if (err) {
-              reject(new Error(resp.message))
+              reject(new Error(message))
             }
-            const ar = resp['attributes'].map((x) => { return x.toLowerCase() })
+            const ar = attributes.map((x) => x.toLowerCase())
             if (ar.indexOf('viewport') >= 0 && ar.indexOf('content') >= 0) {
               // viewportとcontentが存在するmetaタグから不要なものを除いたものがviewportの実体なはず
               const viewports = _.difference(ar, unnecessary)
               resolve(viewports.join(','))
             }
-            // マッチするものがなかった場合はnull返す
             resolve(null)
           })
         })
-      })).then(function (results) {
+      })).then(results => {
         // ひと通りのmetaタグチェックが終わったら結果が配列に入ってやってくる。null以外を,でつないだ文字列にして返してしまう。
         // 間違えてviewportが2つ以上あるとおかしなことになる気がするけれど、選べない。
         // ;とかで区切った方が良いかな？（viewportのwidth=A,B,Cの区切りが,なので）
-        const result = results.filter(
-          function (e) { return e !== null }).join(',')
-        callback(null, result)
-      }).catch(function (err) {
-        return callback(new Error(err))
-      })
+        const result = results.filter(e => e !== null).join(',')
+        cb(null, result)
+      }).catch(
+        err => cb(new Error(err))
+      )
     })
   })
 }
 
-export function forceCharset (chrome: Chrome, callback: Callback) {
-  chrome.DOM.getDocument(null, (err, resp) => {
+export function forceCharset (client: CDP, callback: (err: ?Error) => void) {
+  client.DOM.getDocument(null, (err, {root, message}) => {
     if (err) {
-      return callback(new Error(resp.message))
+      return callback(new Error(message))
     }
-    chrome.DOM.querySelectorAll({
-      nodeId: resp.root.nodeId,
+    client.DOM.querySelectorAll({
+      nodeId: root.nodeId,
       selector: 'meta'
-    }, (err, resp) => {
+    }, (err, {nodeIds, message}) => {
       if (err) {
-        return callback(new Error(resp.message))
+        return callback(new Error(message))
       }
 
-      Promise.all(resp.nodeIds.map((nodeId) => {
+      Promise.all(nodeIds.map((nodeId) => {
         return new Promise((resolve, reject) => {
-          chrome.DOM.getAttributes({
+          client.DOM.getAttributes({
             nodeId: nodeId
-          }, (err, resp) => {
+          }, (err, {attributes, message}) => {
             if (err) {
-              reject(new Error(resp.message))
+              reject(new Error(message))
             }
-            const ar = resp['attributes'].map((x) => { return x.toLowerCase() })
+            const ar = attributes.map((x) => x.toLowerCase())
             if (ar.indexOf('charset') >= 0) {
-              chrome.DOM.setAttributeValue({
+              client.DOM.setAttributeValue({
                 nodeId: nodeId,
                 name: 'charset',
                 value: 'UTF-8'
@@ -382,13 +248,13 @@ export function forceCharset (chrome: Chrome, callback: Callback) {
                 let contentValue = ar[ar.indexOf('content') + 1]
                 contentValue = contentValue.replace(/charset=([-_a-z0-9 ]+)/g, 'charset=UTF-8')
                 contentValue = contentValue.replace(/charset=['"]([-_a-z0-9 ]+)['"]"/g, 'charset="UTF-8"')
-                chrome.DOM.setAttributeValue({
+                client.DOM.setAttributeValue({
                   nodeId: nodeId,
                   name: 'content',
                   value: contentValue
-                }, (err, resp) => {
+                }, (err, {message}) => {
                   if (err) {
-                    reject(new Error(resp.message))
+                    reject(new Error(message))
                   }
                   resolve()
                 })
@@ -397,11 +263,144 @@ export function forceCharset (chrome: Chrome, callback: Callback) {
             resolve(null)
           })
         })
-      })).then(function (results) {
-        callback(null, results)
-      }).catch(function (err) {
-        return callback(new Error(err))
       })
+      ).then(results => callback(null, results)
+      ).catch(err => callback(new Error(err)))
+    })
+  })
+}
+
+export function close (client: CDP, cb: (err: ?Error, res: string) => void) {
+  const {host, port, tab} = client
+  CDP.Close({
+    host: host,
+    port: port,
+    id: tab.id
+  }, (err) => {
+    if (err) {
+      return error(err)
+    }
+    cb(null, 'foo')
+  })
+}
+
+export function removeScripts (client: CDP, cb: (err: ?Error) => void) {
+  client.DOM.getDocument(null, (err, {root, message}) => {
+    if (err) {
+      return cb(new Error(message))
+    }
+
+    // XXX: 要件達成後以下の頻出処理を上手く関数にまとめる
+    client.DOM.querySelectorAll({
+      nodeId: root.nodeId,
+      selector: 'script'
+    }, (err, {nodeIds, message}: {nodeIds: string[], message: string}) => {
+      if (err) {
+        return cb(new Error(message))
+      }
+
+      Promise.all(nodeIds.map(
+        (nodeId) => {
+          return new Promise((resolve, reject) => {
+            client.DOM.removeNode({
+              nodeId: nodeId
+            }, (err, {message}) => {
+              if (err) {
+                reject(new Error(message))
+              }
+              resolve()
+            })
+          })
+        })
+      ).then(
+        values => cb()
+      ).catch(cb)
+    })
+  })
+}
+
+export function emptyIframes (client: CDP, cb: (err: ?Error, res: ?string[]) => void) {
+  client.DOM.getDocument(null, (err, {root, message}) => {
+    if (err) {
+      return cb(new Error(message))
+    }
+
+    client.DOM.querySelectorAll({
+      nodeId: root.nodeId,
+      selector: 'iframe'
+    }, (err, {nodeIds, message}) => {
+      if (err) {
+        return cb(new Error(message))
+      }
+
+      Promise.all(nodeIds.map(
+        (nodeId) => {
+          return new Promise((resolve, reject) => {
+            client.DOM.setAttributeValue({
+              nodeId: nodeId,
+              name: 'src',
+              value: ''
+            }, (err, {message}) => {
+              if (err) {
+                reject(new Error(message))
+              }
+              resolve()
+            })
+          })
+        })
+      ).then(
+        values => cb(null, values)
+      ).catch(cb)
+    })
+  })
+}
+
+export function convertLinkToAbsolutely (client: CDP, {baseURI, selector}: {baseURI: string, selector: string}, cb: (err: ?Error) => void) {
+  const attribute = {'img': 'src', 'link': 'href'}[selector]
+
+  if (!attribute) {
+    return cb(new errors.ArgumentNullError(selector))
+  }
+
+  client.DOM.getDocument(null, (err, {root, message}) => {
+    if (err) {
+      return cb(new Error(message))
+    }
+
+    client.DOM.querySelectorAll({
+      nodeId: root.nodeId,
+      selector: selector
+    }, (err, {nodeIds, message}) => {
+      if (err) {
+        return cb(new Error(message))
+      }
+
+      Promise.all(nodeIds.map(nodeId => {
+        return new Promise((resolve, reject) => {
+          client.DOM.getAttributes({nodeId: nodeId}, (err, {attributes, message}) => {
+            if (err) {
+              reject(new Error(message))
+            }
+            const index = attributes.indexOf(attribute)
+            if (index === -1) {
+              resolve()
+            }
+            const value = attributes[index + 1]
+            client.DOM.setAttributeValue({
+              nodeId: nodeId,
+              name: attribute,
+              value: u.resolve(baseURI, value)
+            }, function (err, resp) {
+              if (err) {
+                reject(new Error(resp))
+              }
+              resolve()
+            })
+          })
+        })
+      })
+    ).then(() => cb()
+    ).catch(err => cb(err))
     })
   })
 }
