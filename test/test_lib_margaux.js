@@ -57,7 +57,7 @@ describe('lib/margaux', () => {
   it('setHeaders', done => {
     margaux.create(host, port, (err, client) => {
       assert(!err)
-      margaux.setHeaders(client, random.alphaNumeric(), (res: any) => {
+      margaux.setHeaders(client, random.alphaNumeric(), (res: string) => {
         assert(res)
         done()
       })
@@ -67,7 +67,7 @@ describe('lib/margaux', () => {
   it('removeScripts', done => {
     margaux.create(host, port, (err, client) => {
       assert(!err)
-      margaux.removeScripts(client, res => {
+      margaux.removeScripts(client, (res: string) => {
         assert(res)
         done()
       })

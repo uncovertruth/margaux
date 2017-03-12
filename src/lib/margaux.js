@@ -284,7 +284,7 @@ export function close (client: CDP, cb: (err: ?Error, res: string) => void) {
   })
 }
 
-export function removeScripts (client: CDP, cb: () => void) {
+export function removeScripts (client: CDP, cb: (res: string) => void) {
   client.DOM.getDocument(null, (err, {root, message}) => {
     if (err) {
       error(err)
