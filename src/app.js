@@ -11,7 +11,7 @@ import {
   MOUNT_CHECK_CONTENT as mountCheckContent,
   CHROME_CHECK_URL as chromeCheckURL
 } from './const'
-import Raven from './lib/logger'
+import Raven, { warning } from './lib/logger'
 import api from './api'
 
 const app = express()
@@ -63,6 +63,7 @@ app.get('/ping', (req, res, next) => {
 app.use((req, res, next) => {
   const err: any = new Error('Not Found')
   err.status = 404
+  warning(err)
   next(err)
 })
 
