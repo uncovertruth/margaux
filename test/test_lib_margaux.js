@@ -34,11 +34,9 @@ describe('lib/margaux', () => {
         {
           height: random.number(),
           width: random.number()
-        },
-        () => {
-          done()
         }
       )
+      done()
     })
   })
 
@@ -46,9 +44,8 @@ describe('lib/margaux', () => {
     const UA = require('../src/const').USER_AGENT
     margaux.create(host, port, (err, client) => {
       assert(!err)
-      margaux.setUserAgentOverride(client, { userAgent: UA }, () => {
-        done()
-      })
+      margaux.setUserAgentOverride(client, { userAgent: UA })
+      done()
     })
   })
 
