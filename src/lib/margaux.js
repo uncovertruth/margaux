@@ -9,13 +9,13 @@ const util = require('util')
 
 import { error } from './logger'
 
-export function create (host: 'localhost' | string, port: number, cb: (err: ?Error, client: ?CDP) => void): void {
+export function create (host: 'localhost' | string, port: number, cb: (client: ?CDP) => void): void {
   CDP.New({
     'host': host,
     'port': port
   }, (err, tab) => {
     if (err) {
-      return cb(err)
+      error(err)
     }
     CDP(
       { host, port, tab },
@@ -28,11 +28,10 @@ export function create (host: 'localhost' | string, port: number, cb: (err: ?Err
         } catch (err) {
           client.close()
         } finally {
-          cb(null, client)
+          cb(client)
         }
       }).on('error', err => {
         error(err)
-        cb(err)
       })
   })
 }
