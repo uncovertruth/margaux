@@ -11,7 +11,7 @@ import {
   MOUNT_CHECK_CONTENT as mountCheckContent,
   CHROME_CHECK_URL as chromeCheckURL
 } from './const'
-import Raven, { error } from './lib/logger'
+import Raven from './lib/logger'
 import api from './api'
 
 const app = express()
@@ -20,10 +20,10 @@ const app = express()
 // var favicon = require('serve-favicon');
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
-if (app.get('env') === 'production') {
-  app.use(logger())
-} else {
+if (app.get('env') === 'development') {
   app.use(logger('dev'))
+} else {
+  app.use(logger())
 }
 
 app.use(Raven.requestHandler())
@@ -59,26 +59,8 @@ app.get('/ping', (req, res, next) => {
   })
 })
 
-if (app.get('env') === 'development') {
-  app.get('/s3/:dir/:hash', (req, res, next) => {
-    const dir = req.params.dir
-    const hash = req.params.hash
-    const storeDir = require('./const').WEBSNAPSHOT_STORE_DIR
-    const file = require('path').join(storeDir, dir, hash)
-    require('./lib/path').readFile(file, (err, text) => {
-      if (err) {
-        err.status = 500
-        next(err)
-      }
-      res.contentType('text/html')
-      res.send(text)
-    })
-  })
-}
-
 // catch 404 and forward to error handler
-// これより前に dispatch を記述しないと 404 になるので注意
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   const err: any = new Error('Not Found')
   err.status = 404
   next(err)
@@ -86,24 +68,7 @@ app.use(function (req, res, next) {
 
 app.use(Raven.errorHandler())
 
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-  app.use(function (err, req, res, next) {
-    res.status(err.status || 500)
-    const body = {
-      message: err.message,
-      error: err
-    }
-    error(err.stack || err)
-    res.send(body)
-    next()
-  })
-}
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function (err, req, res, next) {
+app.use((err, req, res, next) => {
   res.status(err.status || 500)
   res.send({
     message: err.message,
