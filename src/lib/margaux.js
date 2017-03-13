@@ -1,13 +1,13 @@
 /* @flow */
 'use strict'
 
+import { error } from './logger'
+
 const CDP = require('chrome-remote-interface')
 const errors = require('common-errors')
 const u = require('url')
 const _ = require('lodash')
 const util = require('util')
-
-import { error } from './logger'
 
 export function create (host: 'localhost' | string, port: number, cb: (err: ?Error, client: ?CDP) => void): void {
   CDP.New({
