@@ -1,7 +1,7 @@
 /* @flow */
 'use strict'
 import express from 'express'
-import logger from 'morgan'
+import morgan from 'morgan'
 import bodyParser from 'body-parser'
 import path from 'path'
 
@@ -20,11 +20,7 @@ const app = express()
 // var favicon = require('serve-favicon');
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
-if (app.get('env') === 'development') {
-  app.use(logger('dev'))
-} else {
-  app.use(logger())
-}
+app.use(morgan('combined'))
 
 app.use(Raven.requestHandler())
 
