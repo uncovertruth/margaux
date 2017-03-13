@@ -9,13 +9,13 @@ const util = require('util')
 
 import { error } from './logger'
 
-export function create (host: 'localhost' | string, port: number, cb: (err: ?Error, client: ?CDP) => void): void {
+export function create (host: 'localhost' | string, port: number, cb: (client: ?CDP) => void): void {
   CDP.New({
     'host': host,
     'port': port
   }, (err, tab) => {
     if (err) {
-      return cb(err)
+      error(err)
     }
     CDP(
       { host, port, tab },
@@ -28,11 +28,10 @@ export function create (host: 'localhost' | string, port: number, cb: (err: ?Err
         } catch (err) {
           client.close()
         } finally {
-          cb(null, client)
+          cb(client)
         }
       }).on('error', err => {
         error(err)
-        cb(err)
       })
   })
 }
@@ -68,14 +67,14 @@ export function setUserAgentOverride (client: CDP, { userAgent }: { userAgent: s
   })
 }
 
-export function setHeaders (client: CDP, _headers: string, cb: (err: ?Error) => void) {
+export function setHeaders (client: CDP, _headers: string, cb: (res: string) => void) {
   client.Network.setExtraHTTPHeaders({
     headers: _headers // hash
   }, (err, {message}) => {
     if (err) {
-      return cb(new Error(message))
+      error(err)
     }
-    cb()
+    cb(message)
   })
 }
 
@@ -284,10 +283,10 @@ export function close (client: CDP, cb: (err: ?Error, res: string) => void) {
   })
 }
 
-export function removeScripts (client: CDP, cb: (err: ?Error) => void) {
+export function removeScripts (client: CDP, cb: (res: string) => void) {
   client.DOM.getDocument(null, (err, {root, message}) => {
     if (err) {
-      return cb(new Error(message))
+      error(err)
     }
 
     // XXX: 要件達成後以下の頻出処理を上手く関数にまとめる
@@ -296,7 +295,7 @@ export function removeScripts (client: CDP, cb: (err: ?Error) => void) {
       selector: 'script'
     }, (err, {nodeIds, message}: {nodeIds: string[], message: string}) => {
       if (err) {
-        return cb(new Error(message))
+        error(err)
       }
 
       Promise.all(nodeIds.map(
@@ -306,14 +305,14 @@ export function removeScripts (client: CDP, cb: (err: ?Error) => void) {
               nodeId: nodeId
             }, (err, {message}) => {
               if (err) {
-                reject(new Error(message))
+                error(err)
               }
-              resolve()
+              resolve(message)
             })
           })
         })
       ).then(
-        values => cb()
+        values => cb(message)
       ).catch(cb)
     })
   })

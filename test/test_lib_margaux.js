@@ -16,8 +16,8 @@ describe('lib/margaux', () => {
   const createTmpServer = promisify(require('../src/lib/utils').createTmpServer)
 
   it('close', done => {
-    margaux.create(host, port, (err, client) => {
-      assert(err === null)
+    margaux.create(host, port, (client) => {
+      assert(client)
       margaux.close(client, (err, res) => {
         assert(err === null)
         assert(res)
@@ -27,8 +27,8 @@ describe('lib/margaux', () => {
   })
 
   it('setDeviceMetricsOver', done => {
-    margaux.create(host, port, (err, client) => {
-      assert(!err)
+    margaux.create(host, port, (client) => {
+      assert(client)
       margaux.setDeviceMetricsOver(
         client,
         {
@@ -45,8 +45,8 @@ describe('lib/margaux', () => {
 
   it('setUserAgentOverride', done => {
     const UA = require('../src/const').USER_AGENT
-    margaux.create(host, port, (err, client) => {
-      assert(!err)
+    margaux.create(host, port, (client) => {
+      assert(client)
       margaux.setUserAgentOverride(client, { userAgent: UA }, (err, res) => {
         assert(!err)
         done()
@@ -55,28 +55,28 @@ describe('lib/margaux', () => {
   })
 
   it('setHeaders', done => {
-    margaux.create(host, port, (err, client) => {
-      assert(!err)
-      margaux.setHeaders(client, random.alphaNumeric(), err => {
-        assert(err, 'invalid headers')
+    margaux.create(host, port, (client) => {
+      assert(client)
+      margaux.setHeaders(client, random.alphaNumeric(), (res: string) => {
+        assert(res)
         done()
       })
     })
   })
 
   it('removeScripts', done => {
-    margaux.create(host, port, (err, client) => {
-      assert(!err)
-      margaux.removeScripts(client, err => {
-        assert(!err)
+    margaux.create(host, port, (client) => {
+      assert(client)
+      margaux.removeScripts(client, (res: string) => {
+        assert(res)
         done()
       })
     })
   })
 
   it('emptyIframes', done => {
-    margaux.create(host, port, (err, client) => {
-      assert(!err)
+    margaux.create(host, port, (client) => {
+      assert(client)
       margaux.emptyIframes(client, (err, res) => {
         assert(!err)
         done()
@@ -87,8 +87,8 @@ describe('lib/margaux', () => {
   it('evaluate', done => {
     assert(typeof margaux.evaluate === 'function')
 
-    margaux.create(host, port, (err, client: any) => {
-      assert(!err)
+    margaux.create(host, port, (client: any) => {
+      assert(client)
       client._ws.on('close', (result) => {
         // 本来は1000の正常終了だったが、いつのバージョンからかChromeがwindow.closeだと異常終了を返すようになった。
         // closeのテストではなく、evaluateのテストなので異常終了を正とする。
