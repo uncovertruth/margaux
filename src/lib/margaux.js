@@ -68,12 +68,12 @@ export function setUserAgentOverride (client: CDP, { userAgent }: { userAgent: s
   })
 }
 
-export function setHeaders (client: CDP, _headers: string, cb: (err: ?Error) => void) {
+export function setHeaders (client: CDP, _headers: string, cb: () => void) {
   client.Network.setExtraHTTPHeaders({
     headers: _headers // hash
   }, (err, {message}) => {
     if (err) {
-      return cb(new Error(message))
+      error(new Error(message))
     }
     cb()
   })
