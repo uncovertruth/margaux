@@ -42,7 +42,7 @@ export function navigate (client: CDP, url: string, cb: () => void) {
   client.Page.navigate({'url': url})
 }
 
-export function setDeviceMetricsOver (client: CDP, {width, height}: {width: number, height: number}, cb: (err: ?Error) => void) {
+export function setDeviceMetricsOver (client: CDP, {width, height}: {width: number, height: number}, cb: () => void) {
   client.Page.setDeviceMetricsOverride({
     width: width,
     height: height,
@@ -51,18 +51,18 @@ export function setDeviceMetricsOver (client: CDP, {width, height}: {width: numb
     fitWindow: false
   }, (err, {message}) => {
     if (err) {
-      return cb(new Error(message))
+      return error(err)
     }
     cb()
   })
 }
 
-export function setUserAgentOverride (client: CDP, { userAgent }: { userAgent: string }, cb: (err: ?Error) => void) {
+export function setUserAgentOverride (client: CDP, { userAgent }: { userAgent: string }, cb: () => void) {
   client.Network.setUserAgentOverride({
     userAgent: userAgent
   }, (err, {message}) => {
     if (err) {
-      return cb(new Error(message))
+      return error(err)
     }
     cb()
   })
