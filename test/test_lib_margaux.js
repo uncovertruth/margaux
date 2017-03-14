@@ -54,7 +54,7 @@ describe('lib/margaux', () => {
     })
   })
 
-  it.only('setHeaders', done => {
+  it('setHeaders', done => {
     margaux.create(host, port, (err, client) => {
       assert(!err)
       margaux.setHeaders(client, random.alphaNumeric(), () => {

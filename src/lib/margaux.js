@@ -73,9 +73,9 @@ export function setHeaders (client: CDP, _headers: string, cb: () => void) {
     headers: _headers // hash
   }, (err, {message}) => {
     if (err) {
-      return error(err)
+      error(err)
+      cb()
     }
-    cb()
   })
 }
 
