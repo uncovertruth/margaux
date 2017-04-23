@@ -242,8 +242,12 @@ describe('api', function () {
   it('returns 200 when filesystem is OK.', function (done) {
     fs.writeFileSync(TEST_MARGAUX_TXT, TEST_MARGAUX_OK)
     api.ping(TEST_MARGAUX_TXT, TEST_MARGAUX_OK, TEST_MARGAUX_CHECK_URL, function (err) {
-      if (err) {
-        assert(err === null)
+      try {
+        if (err) {
+          assert(err === null)
+        }
+      } catch (e) {
+        assert(false)
       }
     })
     remove.removeSync(TEST_MARGAUX_TXT)
