@@ -1,5 +1,7 @@
 # margaux
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/uncovertruth/margaux.svg)](https://greenkeeper.io/)
+
 [![Build Status][travis-image]][travis-url] [![Build Status][circleci-image]][circleci-url] [![codecov][codecov-image]][codecov-url] [![dependencies Status](https://david-dm.org/uncovertruth/margaux/status.svg)](https://david-dm.org/uncovertruth/margaux) [![devDependencies Status](https://david-dm.org/uncovertruth/margaux/dev-status.svg)](https://david-dm.org/uncovertruth/margaux?type=dev) [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 > create webpage snapshot
 
