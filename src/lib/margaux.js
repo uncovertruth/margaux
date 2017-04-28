@@ -271,14 +271,11 @@ export function forceCharset (client: CDP, callback: (err: ?Error) => void) {
 }
 
 export function close (client: CDP, cb: (err: ?Error, res: string) => void) {
-  const {host, port, tab} = client
-  if (!host || !port || !tab) {
-    return error(new Error(`couldn't get any info. host: ${host}, port: ${port}, tab: ${tab}`))
-  }
+  const {host, port, target} = client
   CDP.Close({
     host: host,
     port: port,
-    id: tab.id
+    id: target.id
   }, (err) => {
     if (err) {
       return error(err)
