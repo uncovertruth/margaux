@@ -1,5 +1,5 @@
 /* @flow */
-import { describe, it } from 'mocha'
+import {describe, it} from 'mocha'
 import assert from 'assert'
 import errors from 'common-errors'
 const fs = require('fs')
@@ -41,7 +41,7 @@ describe('libPath.readFile', function () {
 
   it('should not read path empty string', function (done) {
     const path = ''
-    libPath.readFile(path, (err) => {
+    libPath.readFile(path, err => {
       assert(err instanceof errors.io.FileNotFoundError)
       done()
     })
@@ -50,7 +50,7 @@ describe('libPath.readFile', function () {
   it('should not read text file empty string', function (done) {
     const path = '/tmp/_margaux/test/test_path/empty.txt'
     fs.writeFileSync(path, '')
-    libPath.readFile(path, (err) => {
+    libPath.readFile(path, err => {
       if (!err) {
         assert(false)
       }

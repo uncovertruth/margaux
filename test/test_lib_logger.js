@@ -1,6 +1,6 @@
 /* @flow */
-import { describe, it } from 'mocha'
-import { random } from 'faker'
+import {describe, it} from 'mocha'
+import {random} from 'faker'
 import assert from 'assert'
 
 describe('logger', () => {

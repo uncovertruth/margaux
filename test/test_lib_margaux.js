@@ -1,13 +1,13 @@
 /* @flow */
-import { describe, it } from 'mocha'
-import { random } from 'faker'
+import {describe, it} from 'mocha'
+import {random} from 'faker'
 import _ from 'lodash'
 import assert from 'assert'
 import co from 'co'
 import promisify from 'es6-promisify'
 import errors from 'common-errors'
 
-import { COOKIE_EXPIRES } from '../src/const'
+import {COOKIE_EXPIRES} from '../src/const'
 
 describe('lib/margaux', () => {
   const host = 'localhost'
@@ -46,7 +46,7 @@ describe('lib/margaux', () => {
     const UA = require('../src/const').USER_AGENT
     margaux.create(host, port, (err, client) => {
       assert(!err)
-      margaux.setUserAgentOverride(client, { userAgent: UA }, () => {
+      margaux.setUserAgentOverride(client, {userAgent: UA}, () => {
         done()
       })
     })
@@ -86,7 +86,7 @@ describe('lib/margaux', () => {
 
     margaux.create(host, port, (err, client: any) => {
       assert(!err)
-      client._ws.on('close', (result) => {
+      client._ws.on('close', result => {
         // 本来は1000の正常終了だったが、いつのバージョンからかChromeがwindow.closeだと異常終了を返すようになった。
         // closeのテストではなく、evaluateのテストなので異常終了を正とする。
         // 正常系では影響がないが、延々終わらない異常系でこの方式を使ってchromeを閉じているので問題がないわけではない。
@@ -135,21 +135,29 @@ describe('lib/margaux', () => {
       const result = yield getCookies(chrome, {})
 
       // 取得した連想配列にセットした cookie が存在するかを確認
-      assert.ok(_.filter(result.cookies, {
-        domain: 'localhost', name: 'test', value: '12345'
-      }).length === 1)
+      assert.ok(
+        _.filter(result.cookies, {
+          domain: 'localhost',
+          name: 'test',
+          value: '12345'
+        }).length === 1
+      )
 
       yield navigate(chrome, 'http://localhost:' + server.address().port)
       outerHTML = yield getOuterHTML(chrome)
       assert.ok(outerHTML !== html, '要素が追加された')
 
       // cookie を綺麗にしておく
-      yield deleteCookie(chrome, { cookieName: 'test', url: 'http://localhost/' })
+      yield deleteCookie(chrome, {cookieName: 'test', url: 'http://localhost/'})
 
       yield navigate(chrome, 'http://localhost:' + server.address().port)
       outerHTML = yield getOuterHTML(chrome)
       assert.ok(outerHTML === html, 'cookie が削除されて')
-    }).then(done).catch((e) => { throw e })
+    })
+      .then(done)
+      .catch(e => {
+        throw e
+      })
   })
 
   it('should not set cookie without cookie name', function () {

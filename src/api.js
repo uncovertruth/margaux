@@ -37,7 +37,7 @@ const getOuterHTML = promisify(margaux.getOuterHTML)
 const close = promisify(margaux.close)
 const inline = promisify(inliner)
 const saveFile = promisify(libPath.saveFile)
-const wait = (delay) => {
+const wait = delay => {
   return new Promise((resolve, reject) => {
     setTimeout(resolve, delay)
   })
@@ -53,7 +53,7 @@ Api.prototype.parseParameters = function (params) {
     waitTime: params.waitTime || DEFAULT_WAIT_TIME,
     userAgent: params.userAgent || USER_AGENT,
     acceptLanguage: params.acceptLanguage || 'ja', // 'ハイフン嫌なのでラクダで'
-    saveDir: params.saveDir || 'x',  // project_id を想定
+    saveDir: params.saveDir || 'x', // project_id を想定
     cookies: params.cookies || '' // 相手先サーバの文字エンコーディング(utf8,sjis,etc..)でURLエンコードずみのkey1=value1;key2=value2で送られてくる想定。
   }
 }
@@ -63,8 +63,15 @@ type TakeWebSnapshotOptions = {
   cookies?: string
 }
 
-Api.prototype.takeWebSnapshot = function (url: string, params: TakeWebSnapshotOptions, storeBaseDir: string, cb: (err: ?Error, url?: string, viewport?: string) => void) {
-  function generateKey () { return uuid.v4().replace(/-/g, '') };
+Api.prototype.takeWebSnapshot = function (
+  url: string,
+  params: TakeWebSnapshotOptions,
+  storeBaseDir: string,
+  cb: (err: ?Error, url?: string, viewport?: string) => void
+) {
+  function generateKey () {
+    return uuid.v4().replace(/-/g, '')
+  }
 
   if (!validator.isURL(url)) {
     return cb(new errors.ArgumentError('url'))
@@ -121,7 +128,9 @@ Api.prototype.takeWebSnapshot = function (url: string, params: TakeWebSnapshotOp
     yield navigate(chrome, url)
     // Cookieが渡されていたら、一度ページをロードしてからcookieをセットして、再度ページをロードする
     if (params.cookies) {
-      const cookies = params.cookies.split(';').map((x) => { return x.split('=') })
+      const cookies = params.cookies.split(';').map(x => {
+        return x.split('=')
+      })
       cookies.forEach((cookie, idx, ar) => {
         if (cookie.length !== 2) {
           return cb(exports.ArgumentError(cookies))
@@ -158,11 +167,15 @@ Api.prototype.takeWebSnapshot = function (url: string, params: TakeWebSnapshotOp
   }).catch(cb)
 }
 
-Api.prototype.ping = function (mountCheckFile, mountCheckContent, chromeCheckURL, callback) {
+Api.prototype.ping = function (
+  mountCheckFile,
+  mountCheckContent,
+  chromeCheckURL,
+  callback
+) {
   // mountが外れていると嫌なのでチェック
   if (!libPath.isFileExists(mountCheckFile)) {
-    return callback(errors.NotFoundError(
-      mountCheckFile + ' is not found.'))
+    return callback(errors.NotFoundError(mountCheckFile + ' is not found.'))
   }
   libPath.readFile(mountCheckFile, (err, text) => {
     if (err) {
@@ -170,7 +183,11 @@ Api.prototype.ping = function (mountCheckFile, mountCheckContent, chromeCheckURL
       return callback(errors.io.FileLoadError(err))
     }
     if (mountCheckContent.trim() !== text.trim()) {
-      return callback(errors.io.FileLoadError(`get:${text} expected: ${mountCheckContent} of ${mountCheckFile}`))
+      return callback(
+        errors.io.FileLoadError(
+          `get:${text} expected: ${mountCheckContent} of ${mountCheckFile}`
+        )
+      )
     }
   })
   // chromeに接続できてるのもチェック

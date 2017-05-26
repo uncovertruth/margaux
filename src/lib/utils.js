@@ -4,13 +4,13 @@
 import _ from 'lodash'
 import http from 'http'
 import portastic from 'portastic'
-import { spawn } from 'child_process'
+import {spawn} from 'child_process'
 import os from 'os'
 import promisify from 'es6-promisify'
 import co from 'co'
 
-import { error, warning } from './logger'
-import { REMOTE_DEBUGGING_PORTS } from '../const'
+import {error, warning} from './logger'
+import {REMOTE_DEBUGGING_PORTS} from '../const'
 
 export function getGoogleChromeBin (): string {
   if (os.platform() === 'darwin') {
@@ -20,19 +20,18 @@ export function getGoogleChromeBin (): string {
 }
 
 export function emptyPorts (callback: any) {
-  portastic.find({
-    min: 10000,
-    max: 11000
-  }).then(ports => callback(null, _.sampleSize(ports, 5)))
+  portastic
+    .find({
+      min: 10000,
+      max: 11000
+    })
+    .then(ports => callback(null, _.sampleSize(ports, 5)))
 }
 
 function listenOneAnyPorts (server, ports, callback) {
   // for promisify
   const _listen = (server, port, callback) => {
-    server
-      .on('error', callback)
-      .on('listening', callback)
-      .listen(port)
+    server.on('error', callback).on('listening', callback).listen(port)
   }
 
   co(function * () {
@@ -55,7 +54,10 @@ function listenOneAnyPorts (server, ports, callback) {
   })
 }
 
-export function runChromeWithRemoteDebuggingPort (remoteDebuggingPort: number, callback: any) {
+export function runChromeWithRemoteDebuggingPort (
+  remoteDebuggingPort: number,
+  callback: any
+) {
   const args = [
     '--remote-debugging-port=' + remoteDebuggingPort,
     '--no-default-browser-check',
@@ -67,26 +69,41 @@ export function runChromeWithRemoteDebuggingPort (remoteDebuggingPort: number, c
   return callback(null, spawn(getGoogleChromeBin(), args))
 }
 
-export function runChromeBrowsers (ports: number[] = REMOTE_DEBUGGING_PORTS, cb: (err: ?Error, res: any) => void = (err, res) => { if (err) { error(err) } }) {
+export function runChromeBrowsers (
+  ports: number[] = REMOTE_DEBUGGING_PORTS,
+  cb: (err: ?Error, res: any) => void = (err, res) => {
+    if (err) {
+      error(err)
+    }
+  }
+) {
   const queue = []
   ports.forEach((port: number) => {
-    queue.push(new Promise((resolve, reject) => {
-      runChromeWithRemoteDebuggingPort(port, (err, result) => {
-        if (err) {
-          return reject(err)
-        }
-        resolve()
+    queue.push(
+      new Promise((resolve, reject) => {
+        runChromeWithRemoteDebuggingPort(port, (err, result) => {
+          if (err) {
+            return reject(err)
+          }
+          resolve()
+        })
       })
-    }))
+    )
   })
-  Promise.all(queue).then((results) => {
-    cb(null, results)
-  }).catch((err) => {
-    cb(err)
-  })
+  Promise.all(queue)
+    .then(results => {
+      cb(null, results)
+    })
+    .catch(err => {
+      cb(err)
+    })
 }
 
-export function createTmpServer (html: string, opts: {acceptLanguage?: string}, cb: (err: ?Error, server: any) => void) {
+export function createTmpServer (
+  html: string,
+  opts: {acceptLanguage?: string},
+  cb: (err: ?Error, server: any) => void
+) {
   emptyPorts((err, ports) => {
     if (err) {
       return cb(err)

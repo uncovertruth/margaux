@@ -1,7 +1,7 @@
 /* @flow */
 
 import Raven from 'raven'
-import { RAVEN_DSN } from '../const'
+import {RAVEN_DSN} from '../const'
 
 Raven.config(RAVEN_DSN).install()
 export default Raven

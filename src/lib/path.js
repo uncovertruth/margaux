@@ -10,7 +10,10 @@ export function isFileExists (storePath: string): boolean {
   return fs.existsSync(storePath)
 }
 
-export function generateStorePath (basePath: string, partialPath: string): string {
+export function generateStorePath (
+  basePath: string,
+  partialPath: string
+): string {
   return `${path.join(basePath, partialPath)}.html`
 }
 
