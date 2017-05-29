@@ -11,7 +11,7 @@ import {
   MOUNT_CHECK_CONTENT as mountCheckContent,
   CHROME_CHECK_URL as chromeCheckURL
 } from './const'
-import Raven, { warning } from './lib/logger'
+import Raven, {warning} from './lib/logger'
 import api from './api'
 
 const app = express()
@@ -24,7 +24,7 @@ app.use(morgan('combined'))
 
 app.use(Raven.requestHandler())
 
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({extended: true}))
 
 app.use(function (req, res, next) {
   res.contentType('application/json')
@@ -46,7 +46,7 @@ app.post('/', (req, res, next) => {
 
 app.get('/ping', (req, res, next) => {
   const storePath = path.join(storeBaseDir, mountCheckFile)
-  api.ping(storePath, mountCheckContent, chromeCheckURL, (err) => {
+  api.ping(storePath, mountCheckContent, chromeCheckURL, err => {
     if (err) {
       err.status = 500
       return next(err)
