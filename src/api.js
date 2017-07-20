@@ -73,7 +73,7 @@ Api.prototype.takeWebSnapshot = function (
     return uuid.v4().replace(/-/g, '')
   }
 
-  if (!validator.isURL(url)) {
+  if (!validator.isURL(url, { require_tld: false })) {
     return cb(new errors.ArgumentError('url'))
   }
 
@@ -111,7 +111,7 @@ Api.prototype.takeWebSnapshot = function (
       width: opts.width,
       height: opts.height
     })
-    yield setUserAgentOverride(chrome, {userAgent: opts.userAgent})
+    yield setUserAgentOverride(chrome, { userAgent: opts.userAgent })
     const extraHeaders = {}
     if (opts.acceptLanguage) {
       extraHeaders['Accept-Language'] = opts.acceptLanguage
@@ -149,8 +149,8 @@ Api.prototype.takeWebSnapshot = function (
     const viewport = yield extractViewport(chrome)
 
     // resolve img@src and link@href
-    yield convertLinkToAbsolutely(chrome, {baseURI: url, selector: 'img'})
-    yield convertLinkToAbsolutely(chrome, {baseURI: url, selector: 'link'})
+    yield convertLinkToAbsolutely(chrome, { baseURI: url, selector: 'img' })
+    yield convertLinkToAbsolutely(chrome, { baseURI: url, selector: 'link' })
 
     // get html and close chrome tab
     yield removeScripts(chrome)
@@ -160,7 +160,7 @@ Api.prototype.takeWebSnapshot = function (
     yield close(chrome)
 
     // inlining html and save it.
-    const inlinedHtml = yield inline(html, {baseUrl: url})
+    const inlinedHtml = yield inline(html, { baseUrl: url })
     yield saveFile(storePath, inlinedHtml)
 
     cb(null, uniquePath, viewport)
