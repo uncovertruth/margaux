@@ -4,10 +4,6 @@ addons:
   chrome: stable
 language: node_js
 node_js: stable
-cache:
-  yarn: true
-  directories:
-    - node_modules
 env:
   matrix:
   - CMD=lint
@@ -18,7 +14,7 @@ before_install:
 - sh -e /etc/init.d/xvfb start
 script:
 - npm run serve &
-- yarn $CMD
+- npm run $CMD
 after_success:
 - '[ "${CMD}" == "test" ] && npm run codecov'
 notifications:
