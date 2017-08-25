@@ -81,7 +81,7 @@
     "clean": "rimraf dist coverage",
     "codecov": "nyc report --reporter=lcov > coverage.lcov && codecov",
     "dev": "cross-env NODE_ENV=development supervisor ./dist/bin/www.js",
-    "lint": "nun-p lint:*",
+    "lint": "run-p lint:*",
     "lint:es": "eslint . --cache",
     "lint:flow": "flow",
     "postinstall": "npm run build",
