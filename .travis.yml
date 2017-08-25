@@ -12,6 +12,10 @@ cache:
   yarn: true
   directories:
     - node_modules
+env:
+  matrix:
+  - CMD=lint
+  - CMD=test
 before_install:
 - curl -o- -L https://yarnpkg.com/install.sh | bash
 - export CHROME_BIN=chromium-browser
@@ -19,9 +23,9 @@ before_install:
 - sh -e /etc/init.d/xvfb start
 script:
 - npm run serve &
-- npm test
+- yarn $CMD 
 after_success:
-- npm run codecov
+- '[ "${CMD}" == "test" ] && npm run codecov'
 notifications:
   email: false
   slack:

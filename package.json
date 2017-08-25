@@ -16,7 +16,7 @@
     "cookie-parser": "^1.4.3",
     "es6-promisify": "^5.0.0",
     "express": "^4.15.4",
-    "inliner": "^1.12.3",
+    "inliner": "github:uncovertruth/inliner#feature/upgrade-svgo",
     "lodash": "^4.17.4",
     "mkdirp": "^0.5.1",
     "moment": "^2.18.1",
@@ -81,7 +81,7 @@
     "clean": "rimraf dist coverage",
     "codecov": "nyc report --reporter=lcov > coverage.lcov && codecov",
     "dev": "cross-env NODE_ENV=development supervisor ./dist/bin/www.js",
-    "lint": "npm-run-all -p lint:*",
+    "lint": "nun-p lint:*",
     "lint:es": "eslint . --cache",
     "lint:flow": "flow",
     "postinstall": "npm run build",
@@ -92,8 +92,6 @@
     "prestart": "npm run build",
     "serve": "node -e \"require('./dist/lib/utils').runChromeBrowsers(require('./dist/const').REMOTE_DEBUGGING_PORTS)\"",
     "start": "node ./dist/bin/cluster.js",
-    "test": "npm-run-all -p test:*",
-    "test:lint": "npm run lint",
-    "test:mocha": "nyc mocha -- test"
+    "test": "nyc mocha -- test"
   }
 }
