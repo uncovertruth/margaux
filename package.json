@@ -16,7 +16,7 @@
     "cookie-parser": "^1.4.3",
     "es6-promisify": "^5.0.0",
     "express": "^4.15.4",
-    "inliner": "github:uncovertruth/inliner#feature/upgrade-svgo",
+    "inliner": "git://github.com/uncovertruth/inliner.git#feature/upgrade-svgo",
     "lodash": "^4.17.4",
     "mkdirp": "^0.5.1",
     "moment": "^2.18.1",
