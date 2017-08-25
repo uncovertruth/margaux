@@ -17,13 +17,12 @@ env:
   - CMD=lint
   - CMD=test
 before_install:
-- curl -o- -L https://yarnpkg.com/install.sh | bash
 - export CHROME_BIN=chromium-browser
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
 script:
 - npm run serve &
-- yarn $CMD 
+- yarn $CMD
 after_success:
 - '[ "${CMD}" == "test" ] && npm run codecov'
 notifications:
