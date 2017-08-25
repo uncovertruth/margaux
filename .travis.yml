@@ -1,3 +1,5 @@
+sudo: false
+dist: precise
 addons:
   chrome: stable
 language: node_js
