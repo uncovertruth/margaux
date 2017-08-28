@@ -1,19 +1,21 @@
 /* @flow */
-import {describe, it} from 'mocha'
-import {random} from 'faker'
+import { describe, it } from 'mocha'
+import { random } from 'faker'
 import _ from 'lodash'
 import assert from 'assert'
 import co from 'co'
-import promisify from 'es6-promisify'
+import { promisify } from 'util'
 import errors from 'common-errors'
 
-import {COOKIE_EXPIRES} from '../src/const'
+import { COOKIE_EXPIRES } from '../../src/const'
 
 describe('lib/margaux', () => {
   const host = 'localhost'
   const port = 9223
-  const margaux = require('../src/lib/margaux')
-  const createTmpServer = promisify(require('../src/lib/utils').createTmpServer)
+  const margaux = require('../../src/lib/margaux')
+  const createTmpServer = promisify(
+    require('../../src/lib/utils').createTmpServer
+  )
 
   it('close', done => {
     margaux.create(host, port, (err, client) => {
@@ -43,10 +45,10 @@ describe('lib/margaux', () => {
   })
 
   it('setUserAgentOverride', done => {
-    const UA = require('../src/const').USER_AGENT
+    const UA = require('../../src/const').USER_AGENT
     margaux.create(host, port, (err, client) => {
       assert(!err)
-      margaux.setUserAgentOverride(client, {userAgent: UA}, () => {
+      margaux.setUserAgentOverride(client, { userAgent: UA }, () => {
         done()
       })
     })
@@ -131,7 +133,7 @@ describe('lib/margaux', () => {
       assert.ok(outerHTML === html, 'まだ cookie が存在していない')
 
       // set and get
-      yield setCookie(chrome, {cookieName: 'test', value: '12345'})
+      yield setCookie(chrome, { cookieName: 'test', value: '12345' })
       const result = yield getCookies(chrome, {})
 
       // 取得した連想配列にセットした cookie が存在するかを確認
@@ -148,7 +150,10 @@ describe('lib/margaux', () => {
       assert.ok(outerHTML !== html, '要素が追加された')
 
       // cookie を綺麗にしておく
-      yield deleteCookie(chrome, {cookieName: 'test', url: 'http://localhost/'})
+      yield deleteCookie(chrome, {
+        cookieName: 'test',
+        url: 'http://localhost/'
+      })
 
       yield navigate(chrome, 'http://localhost:' + server.address().port)
       outerHTML = yield getOuterHTML(chrome)

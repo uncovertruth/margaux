@@ -4,13 +4,13 @@
 import _ from 'lodash'
 import http from 'http'
 import portastic from 'portastic'
-import {spawn} from 'child_process'
+import { spawn } from 'child_process'
 import os from 'os'
-import promisify from 'es6-promisify'
+import { promisify } from 'util'
 import co from 'co'
 
-import {error, warning} from './logger'
-import {REMOTE_DEBUGGING_PORTS} from '../const'
+import { error, warning } from './logger'
+import { REMOTE_DEBUGGING_PORTS } from '../const'
 
 export function getGoogleChromeBin (): string {
   if (os.platform() === 'darwin') {
@@ -43,7 +43,7 @@ function listenOneAnyPorts (server, ports, callback) {
       } catch (err) {
         // アドレスが既に使用されている場合は想定内なので処理を継続
         if (err.code === 'EADDRINUSE') {
-          warning(`duplicated ports`, {port})
+          warning(`duplicated ports`, { port })
           continue
         }
         return callback(err)
@@ -101,7 +101,7 @@ export function runChromeBrowsers (
 
 export function createTmpServer (
   html: string,
-  opts: {acceptLanguage?: string},
+  opts: { acceptLanguage?: string },
   cb: (err: ?Error, server: any) => void
 ) {
   emptyPorts((err, ports) => {

@@ -5,7 +5,7 @@ import _ from 'lodash'
 import errors from 'common-errors'
 import path from 'path'
 import validator from 'validator'
-import promisify from 'es6-promisify'
+import { promisify } from 'util'
 import co from 'co'
 import uuid from 'uuid'
 

@@ -1,12 +1,12 @@
 /* @flow */
-import {describe, it} from 'mocha'
+import { describe, it } from 'mocha'
 import assert from 'assert'
 import errors from 'common-errors'
 const fs = require('fs')
 const remove = require('remove')
 
 describe('libPath.saveFile', function () {
-  const libPath = require('../src/lib/path')
+  const libPath = require('../../src/lib/path')
 
   it('shoule save file', function (done) {
     const path = '/tmp/_margaux/test/test_path/xxxx'
@@ -28,7 +28,7 @@ describe('libPath.saveFile', function () {
 })
 
 describe('libPath.readFile', function () {
-  const libPath = require('../src/lib/path')
+  const libPath = require('../../src/lib/path')
 
   it('should read file', function (done) {
     const path = '/tmp/_margaux/test/test_path/xxxx'
