@@ -34,7 +34,6 @@ npm install
 
 ```sh
 # localhost
-npm run serve &
 npm start
 ```
 

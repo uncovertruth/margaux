@@ -1,5 +1,5 @@
 /* @flow */
-import {describe, it, before} from 'mocha'
+import { describe, it, before } from 'mocha'
 import assert from 'assert'
 import request from 'supertest'
 import http from 'http'
@@ -16,7 +16,7 @@ describe('POST /', function () {
       const httpPort = emptyPorts[0]
       http
         .createServer(function (req, res) {
-          res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'})
+          res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
           res.end(req.url === '/' ? testHtml : '')
         })
         .listen(httpPort)
