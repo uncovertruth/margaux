@@ -33,6 +33,7 @@
     "babel-preset-power-assert": "^1.0.0",
     "babel-register": "^6.26.0",
     "codecov": "^2.3.0",
+    "concurrently": "^3.5.0",
     "cross-env": "^5.0.5",
     "eslint": "^4.5.0",
     "faker": "^4.1.0",
@@ -87,10 +88,10 @@
     "prebuild": "npm run clean",
     "precommit": "lint-staged",
     "predev": "npm run build",
-    "preserve": "npm run build",
     "prestart": "npm run build",
-    "serve": "node -e \"require('./dist/lib/utils').runChromeBrowsers(require('./dist/const').REMOTE_DEBUGGING_PORTS)\"",
-    "start": "node ./dist/bin/cluster.js",
-    "test": "nyc mocha -- test"
+    "start": "concurrently --kill-others 'npm run w:chrome' 'npm run w:cluster'",
+    "test": "nyc mocha -- test",
+    "w:chrome": "node -e \"require('./dist/lib/utils').runChromeBrowsers(require('./dist/const').REMOTE_DEBUGGING_PORTS)\"",
+    "w:cluster": "node ./dist/bin/cluster.js"
   }
 }
