@@ -95,7 +95,7 @@ describe('api', function () {
   const TEST_STORE_DIR = '/tmp/_margaux/_margaux_test'
 
   before(function (done) {
-    const emptyPorts = require('../src/lib/utils').emptyPorts
+    const { emptyPorts } = require('../src/lib/utils')
     emptyPorts((err, emptyPorts) => {
       assert(err === null)
       const httpPort = emptyPorts[0]
@@ -258,59 +258,26 @@ describe('api', function () {
 
   const TEST_MARGAUX_TXT = '/tmp/_margaux_test.txt'
   const TEST_MARGAUX_OK = 'OK'
-  const TEST_MARGAUX_NG = 'NG'
   const TEST_MARGAUX_CHECK_URL = 'http://localhost/tmp/margaux_check.txt'
 
-  it('returns 200 when filesystem is OK.', function (done) {
+  it('returns 200 when filesystem is OK.', done => {
     fs.writeFileSync(TEST_MARGAUX_TXT, TEST_MARGAUX_OK)
-    api.ping(
-      TEST_MARGAUX_TXT,
-      TEST_MARGAUX_OK,
-      TEST_MARGAUX_CHECK_URL,
-      function (err) {
-        if (err) {
-          assert(err === null)
-        }
-      }
+    api.ping(TEST_MARGAUX_TXT, TEST_MARGAUX_OK, TEST_MARGAUX_CHECK_URL, err =>
+      assert(!err)
     )
-    remove.removeSync(TEST_MARGAUX_TXT)
-    done()
+    remove(TEST_MARGAUX_TXT, err => {
+      assert(!err)
+      done()
+    })
   })
 
-  it('returns 500 when filesystem is NG1.', function (done) {
-    fs.writeFileSync(TEST_MARGAUX_TXT, TEST_MARGAUX_NG)
-
-    api.ping(
-      TEST_MARGAUX_TXT,
-      TEST_MARGAUX_OK,
-      TEST_MARGAUX_CHECK_URL,
-      function (err) {
-        if (!err) {
-          assert(false)
-        }
-      }
+  it('returns 500 when filesystem is NG.', () => {
+    api.ping(TEST_MARGAUX_TXT, TEST_MARGAUX_OK, TEST_MARGAUX_CHECK_URL, err =>
+      assert(err)
     )
-    remove.removeSync(TEST_MARGAUX_TXT)
-    done()
   })
 
-  it('returns 500 when filesystem is NG2.', function (done) {
-    api.ping(
-      TEST_MARGAUX_TXT,
-      TEST_MARGAUX_OK,
-      TEST_MARGAUX_CHECK_URL,
-      function (err) {
-        if (!err) {
-          assert(false)
-        }
-      }
-    )
-    done()
-  })
-
-  it('raises errors.NotPermittedError when directory traversal.', function (
-    done
-  ) {
+  it('raises errors.NotPermittedError when directory traversal.', done => {
     api.takeWebSnapshot(
       testUrlHost + testUrlWithJSViewport,
       { saveDir: '../../a' },
