@@ -1,5 +1,7 @@
 # margaux
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/uncovertruth/margaux.svg)](https://greenkeeper.io/)
+
 [![Build Status][travis-image]][travis-url]
 [![Build Status][circleci-image]][circleci-url]
 [![codecov][codecov-image]][codecov-url]
