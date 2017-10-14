@@ -44,7 +44,7 @@ const wait = delay => {
 
 function Api () {}
 
-Api.prototype.parseParameters = function (params) {
+Api.prototype.parseParameters = function (params: Object) {
   return {
     referer: params.referer || '',
     width: parseInt(params.width, 10) || DEFAULT_WIDTH,

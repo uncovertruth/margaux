@@ -9,7 +9,7 @@ export const USER_AGENT = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) Apple
 
 export const CHROME_CHECK_URL: ?string = process.env.NODE_WEBSNAPHOT_CHECK_TEXT
 export const CLOSE_TAB_TIMEOUT: number =
-  parseInt(process.env.NODE_NEO_PAGE_CACHE_TAB_TIMEOUT, 10) || 30 * 1000
+  parseInt(process.env.NODE_NEO_PAGE_CACHE_TAB_TIMEOUT, 10) || 120 * 1000
 export const MOUNT_CHECK_CONTENT: string = 'OK'
 export const MOUNT_CHECK_FILE: string = 'margaux_check.txt'
 export const RAVEN_DSN: ?string = process.env.RAVEN_DSN

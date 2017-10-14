@@ -1,7 +1,5 @@
 # margaux
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/uncovertruth/margaux.svg)](https://greenkeeper.io/)
-
 [![Build Status][travis-image]][travis-url]
 [![Build Status][circleci-image]][circleci-url]
 [![codecov][codecov-image]][codecov-url]
@@ -12,6 +10,7 @@
 [![codebeat badge](https://codebeat.co/badges/eb6850c8-8b85-420e-a76c-e4299849d33b)](https://codebeat.co/projects/github-com-uncovertruth-margaux-master)
 [![BCH compliance](https://bettercodehub.com/edge/badge/uncovertruth/margaux?branch=master)](https://bettercodehub.com/results/uncovertruth/margaux)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4ef74a3120a14d6f86559ce95ee4d3ed)](https://www.codacy.com/app/USERDIVE/margaux?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=uncovertruth/margaux&amp;utm_campaign=Badge_Grade)
+[![Greenkeeper badge](https://badges.greenkeeper.io/uncovertruth/margaux.svg)](https://greenkeeper.io/)
 
 > create webpage snapshot
 
@@ -37,15 +36,6 @@ npm install
 ```sh
 # localhost
 npm start
-```
-
-```sh
-# with Docker
-docker-machine create --driver virtualbox dev
-docker-machine start dev
-eval $(docker-machine env dev)
-docker build -t uncovertruth/margaux-app .
-docker run -d -e NODE_NEO_PAGE_CACHE_URL=http://$(docker-machine ip dev)/s3 -p 80:8080 uncovertruth/margaux-app
 ```
 
 ### API
