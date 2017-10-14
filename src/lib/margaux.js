@@ -7,7 +7,6 @@ const CDP = require('chrome-remote-interface')
 const errors = require('common-errors')
 const u = require('url')
 const _ = require('lodash')
-const { format } = require('util')
 
 export function create (
   host: 'localhost' | string,
@@ -140,76 +139,6 @@ export function evaluate (
       cb(null, resp)
     }
   )
-}
-
-type CookieOptions = {
-  cookieName: string,
-  value: string | number,
-  expires: number
-}
-
-export function getCookies (
-  client: CDP,
-  opts: Object,
-  cb: (err: ?Error, res: ?{ message: string }) => void
-) {
-  client.Network.getCookies((err, resp: { message: string }) => {
-    if (err) {
-      return cb(new Error(resp.message))
-    }
-    cb(null, resp)
-  })
-}
-
-export function setCookie (
-  client: CDP,
-  { cookieName, value, expires }: CookieOptions,
-  cb: (err: ?Error, res: ?{ message: string }) => void
-) {
-  if (!cookieName) {
-    return cb(new errors.ArgumentNullError('cookieName'))
-  }
-  if (!value) {
-    return cb(new errors.ArgumentNullError('value'))
-  }
-
-  const formattedExpires = new Date(
-    new Date().getTime() + expires
-  ).toUTCString()
-
-  const expression = format(
-    'window.document.cookie = "%s=%s; expires=%s"',
-    cookieName,
-    value,
-    formattedExpires
-  )
-
-  evaluate(client, expression, (err, res: any) => {
-    if (err) {
-      return cb(res.message)
-    }
-    cb(null, res)
-  })
-}
-
-export function deleteCookie (
-  client: CDP,
-  opts: { cookieName: string, url: string },
-  cb: (err: ?Error, res: ?{ message: string }) => void
-) {
-  if (!opts.cookieName) {
-    return cb(new errors.ArgumentNullError('cookieName'))
-  }
-  if (!opts.url) {
-    return cb(new errors.ArgumentNullError('url'))
-  }
-
-  client.Network.deleteCookie(opts, (err, resp) => {
-    if (err) {
-      return cb(new Error(resp.message))
-    }
-    cb(null, resp)
-  })
 }
 
 export function extractViewport (

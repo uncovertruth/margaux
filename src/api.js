@@ -28,7 +28,6 @@ const setHeaders = promisify(margaux.setHeaders)
 const navigate = promisify(margaux.navigate)
 const extractViewport = promisify(margaux.extractViewport)
 const forceCharset = promisify(margaux.forceCharset)
-const setCookie = promisify(margaux.setCookie)
 const convertLinkToAbsolutely = promisify(margaux.convertLinkToAbsolutely)
 const removeScripts = promisify(margaux.removeScripts)
 const emptyIframes = promisify(margaux.emptyIframes)
@@ -52,14 +51,12 @@ Api.prototype.parseParameters = function (params: Object) {
     waitTime: params.waitTime || DEFAULT_WAIT_TIME,
     userAgent: params.userAgent || USER_AGENT,
     acceptLanguage: params.acceptLanguage || 'ja', // 'ハイフン嫌なのでラクダで'
-    saveDir: params.saveDir || 'x', // project_id を想定
-    cookies: params.cookies || '' // 相手先サーバの文字エンコーディング(utf8,sjis,etc..)でURLエンコードずみのkey1=value1;key2=value2で送られてくる想定。
+    saveDir: params.saveDir || 'x' // project_id を想定
   }
 }
 
 type TakeWebSnapshotOptions = {
-  saveDir?: string,
-  cookies?: string
+  saveDir?: string
 }
 
 Api.prototype.takeWebSnapshot = function (
@@ -124,24 +121,6 @@ Api.prototype.takeWebSnapshot = function (
 
     // start rendering and wait it finish.
     await navigate(chrome, url)
-    // Cookieが渡されていたら、一度ページをロードしてからcookieをセットして、再度ページをロードする
-    if (params.cookies) {
-      const cookies = params.cookies.split(';').map(x => {
-        return x.split('=')
-      })
-      cookies.forEach((cookie, idx, ar) => {
-        if (cookie.length !== 2) {
-          return cb(exports.ArgumentError(cookies))
-        }
-        // TODO yield ?
-        // console.log('set cookie');
-        setCookie(chrome, {
-          cookieName: cookie[0],
-          value: cookie[1]
-        })
-      })
-      await navigate(chrome, url)
-    }
     await wait(waitTime)
 
     const viewport = await extractViewport(chrome)

@@ -4,7 +4,6 @@
 export const DEFAULT_WIDTH = 1280
 export const DEFAULT_HEIGHT = 1024
 export const DEFAULT_WAIT_TIME = 10 * 1000
-export const COOKIE_EXPIRES = 10 * 1000
 export const USER_AGENT = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) CDP/47.0.2526.73 Safari/537.36`
 
 export const CHROME_CHECK_URL: ?string = process.env.NODE_WEBSNAPHOT_CHECK_TEXT
