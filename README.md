@@ -1,7 +1,6 @@
 # margaux
 
 [![Build Status][travis-image]][travis-url]
-[![Build Status][circleci-image]][circleci-url]
 [![codecov][codecov-image]][codecov-url]
 [![dependencies Status](https://david-dm.org/uncovertruth/margaux/status.svg)](https://david-dm.org/uncovertruth/margaux)
 [![devDependencies Status](https://david-dm.org/uncovertruth/margaux/dev-status.svg)](https://david-dm.org/uncovertruth/margaux?type=dev)
@@ -57,7 +56,5 @@ MIT © UNCOVER TRUTH Inc.
 
 [travis-image]: https://travis-ci.org/uncovertruth/margaux.svg?branch=master
 [travis-url]: https://travis-ci.org/uncovertruth/margaux
-[circleci-image]: https://circleci.com/gh/uncovertruth/margaux/tree/master.svg?style=svg&circle-token=c9c9ff761c704d908a035eea8a0d7d5487b868f9
-[circleci-url]: https://circleci.com/gh/uncovertruth/margaux/tree/master
 [codecov-image]: https://codecov.io/gh/uncovertruth/margaux/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/uncovertruth/margaux
