@@ -45,7 +45,6 @@ function Api () {}
 
 Api.prototype.parseParameters = function (params: Object) {
   return {
-    referer: params.referer || '',
     width: parseInt(params.width, 10) || DEFAULT_WIDTH,
     height: parseInt(params.height, 10) || DEFAULT_HEIGHT,
     waitTime: params.waitTime || DEFAULT_WAIT_TIME,
@@ -110,10 +109,6 @@ Api.prototype.takeWebSnapshot = function (
     const extraHeaders = {}
     if (opts.acceptLanguage) {
       extraHeaders['Accept-Language'] = opts.acceptLanguage
-    }
-    if (opts.referer) {
-      // https://tools.ietf.org/html/rfc2616#section-14.36 rが1つ
-      extraHeaders['Referer'] = opts.referer
     }
     if (Object.keys(extraHeaders).length > 0) {
       await setHeaders(chrome, extraHeaders)
