@@ -2,7 +2,9 @@ sudo: false
 addons:
  chrome: stable
 language: node_js
-node_js: stable
+node_js:
+- stable
+- 8
 env:
   matrix:
   - CMD=lint
