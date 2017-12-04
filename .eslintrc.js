@@ -1,6 +1,4 @@
 module.exports = {
-  parser: 'babel-eslint',
-  plugins: ['flowtype'],
   extends: ['@uncovertruth/eslint-config-flowtype'],
   rules: {
     'no-new': 1,
