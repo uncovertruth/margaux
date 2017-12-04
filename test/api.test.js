@@ -12,7 +12,8 @@ describe('api', function () {
 
   let testUrlHost
   const testUrlWithoutViewport = '/'
-  const testHtmlWitouthViewport = '<!DOCTYPE html><html><head></head><body></body></html>'
+  const testHtmlWitouthViewport =
+    '<!DOCTYPE html><html><head></head><body></body></html>'
   const testUrlWithViewport = '/with-viewport/'
   const testHtmlWithViewport = `
   <!DOCTYPE html><html><head>
@@ -94,39 +95,41 @@ describe('api', function () {
   const TEST_STORE_DIR = '/tmp/_margaux/_margaux_test'
 
   before(function (done) {
-    const emptyPorts = require('../src/lib/utils').emptyPorts
+    const { emptyPorts } = require('../src/lib/utils')
     emptyPorts((err, emptyPorts) => {
       assert(err === null)
       const httpPort = emptyPorts[0]
-      http.createServer(function (req, res) {
-        res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'})
-        switch (req.url) {
-          case testUrlWithViewport:
-            res.end(testHtmlWithViewport)
-            break
-          case testUrlWithoutViewport:
-            res.end(testHtmlWitouthViewport)
-            break
-          case testUrlWithJSViewport:
-            res.end(testHtmlWithJSViewport)
-            break
-          case testUrlWithMetaContentCharsetShiftJIS:
-            res.end(testHtmlWithMetaContentCharsetShiftJIS)
-            break
-          case testUrlWithMetaCharsetShiftJIS:
-            res.end(testHtmlWithMetaCharsetShiftJIS)
-            break
-          case testUrlWithIframe:
-            res.end(testHtmlWithIframe)
-            break
-          case testUrlWithLink:
-            res.end(testHtmlWithLink)
-            break
-          default:
-            res.end('')
-            break
-        }
-      }).listen(httpPort)
+      http
+        .createServer(function (req, res) {
+          res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
+          switch (req.url) {
+            case testUrlWithViewport:
+              res.end(testHtmlWithViewport)
+              break
+            case testUrlWithoutViewport:
+              res.end(testHtmlWitouthViewport)
+              break
+            case testUrlWithJSViewport:
+              res.end(testHtmlWithJSViewport)
+              break
+            case testUrlWithMetaContentCharsetShiftJIS:
+              res.end(testHtmlWithMetaContentCharsetShiftJIS)
+              break
+            case testUrlWithMetaCharsetShiftJIS:
+              res.end(testHtmlWithMetaCharsetShiftJIS)
+              break
+            case testUrlWithIframe:
+              res.end(testHtmlWithIframe)
+              break
+            case testUrlWithLink:
+              res.end(testHtmlWithLink)
+              break
+            default:
+              res.end('')
+              break
+          }
+        })
+        .listen(httpPort)
       testUrlHost = 'http://localhost:' + httpPort
       done()
     })
@@ -147,7 +150,8 @@ describe('api', function () {
         assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
         assert(viewport === '')
         done()
-      })
+      }
+    )
   })
 
   it('returns html with viewport', done => {
@@ -161,7 +165,8 @@ describe('api', function () {
         assert(viewport === 'width=device-width,initial-scale=1')
         assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
         done()
-      })
+      }
+    )
   })
 
   it('returns html with js viewport', done => {
@@ -175,7 +180,8 @@ describe('api', function () {
         assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
         assert.equal(viewport, 'width=device-width,initial-scale=1.0')
         done()
-      })
+      }
+    )
   })
 
   it('returns html with meta content charset ShiftJIS', done => {
@@ -187,11 +193,20 @@ describe('api', function () {
         assert(err === null)
         assert(url.length > 0)
         assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
-        const tmpBuf = fs.readFileSync(`${path.join(TEST_STORE_DIR, url)}`).toString()
-        assert(tmpBuf.match('<meta name="keywords" content="fake charset=ShiftJIS">'))
-        assert(tmpBuf.match('<meta http-equiv="content-Type" content="text/html; charset=UTF-8">'))
+        const tmpBuf = fs
+          .readFileSync(`${path.join(TEST_STORE_DIR, url)}`)
+          .toString()
+        assert(
+          tmpBuf.match('<meta name="keywords" content="fake charset=ShiftJIS">')
+        )
+        assert(
+          tmpBuf.match(
+            '<meta http-equiv="content-Type" content="text/html; charset=UTF-8">'
+          )
+        )
         done()
-      })
+      }
+    )
   })
 
   it('returns html with meta charset ShiftJIS', done => {
@@ -203,11 +218,16 @@ describe('api', function () {
         assert(err === null)
         assert(url.length > 0)
         assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
-        const tmpBuf = fs.readFileSync(`${path.join(TEST_STORE_DIR, url)}`).toString()
-        assert(tmpBuf.match('<meta name="keywords" content="fake charset=ShiftJIS">'))
+        const tmpBuf = fs
+          .readFileSync(`${path.join(TEST_STORE_DIR, url)}`)
+          .toString()
+        assert(
+          tmpBuf.match('<meta name="keywords" content="fake charset=ShiftJIS">')
+        )
         assert(tmpBuf.match('<meta charset="UTF-8">'))
         done()
-      })
+      }
+    )
   })
 
   it('emptyIframes', done => {
@@ -219,7 +239,8 @@ describe('api', function () {
         assert(!err)
         assert(res)
         done()
-      })
+      }
+    )
   })
 
   it('convertLinkToAbsolutely', done => {
@@ -231,55 +252,40 @@ describe('api', function () {
         assert(!err)
         assert(res)
         done()
-      })
+      }
+    )
   })
 
   const TEST_MARGAUX_TXT = '/tmp/_margaux_test.txt'
   const TEST_MARGAUX_OK = 'OK'
-  const TEST_MARGAUX_NG = 'NG'
   const TEST_MARGAUX_CHECK_URL = 'http://localhost/tmp/margaux_check.txt'
 
-  it('returns 200 when filesystem is OK.', function (done) {
+  it('returns 200 when filesystem is OK.', done => {
     fs.writeFileSync(TEST_MARGAUX_TXT, TEST_MARGAUX_OK)
-    api.ping(TEST_MARGAUX_TXT, TEST_MARGAUX_OK, TEST_MARGAUX_CHECK_URL, function (err) {
-      if (err) {
-        assert(err === null)
-      }
+    api.ping(TEST_MARGAUX_TXT, TEST_MARGAUX_OK, TEST_MARGAUX_CHECK_URL, err =>
+      assert(!err)
+    )
+    remove(TEST_MARGAUX_TXT, err => {
+      assert(!err)
+      done()
     })
-    remove.removeSync(TEST_MARGAUX_TXT)
-    done()
   })
 
-  it('returns 500 when filesystem is NG1.', function (done) {
-    fs.writeFileSync(TEST_MARGAUX_TXT, TEST_MARGAUX_NG)
-
-    api.ping(TEST_MARGAUX_TXT, TEST_MARGAUX_OK, TEST_MARGAUX_CHECK_URL, function (err) {
-      if (!err) {
-        assert(false)
-      }
-    })
-    remove.removeSync(TEST_MARGAUX_TXT)
-    done()
+  it('returns 500 when filesystem is NG.', () => {
+    api.ping(TEST_MARGAUX_TXT, TEST_MARGAUX_OK, TEST_MARGAUX_CHECK_URL, err =>
+      assert(err)
+    )
   })
 
-  it('returns 500 when filesystem is NG2.', function (done) {
-    api.ping(TEST_MARGAUX_TXT, TEST_MARGAUX_OK, TEST_MARGAUX_CHECK_URL, function (err) {
-      if (!err) {
-        assert(false)
+  it('raises errors.NotPermittedError when directory traversal.', done => {
+    api.takeWebSnapshot(
+      testUrlHost + testUrlWithJSViewport,
+      { saveDir: '../../a' },
+      TEST_STORE_DIR,
+      (err: any, url, viewport) => {
+        assert(err.name === 'NotPermittedError')
+        done()
       }
-    })
-    done()
+    )
   })
-
-  it('raises errors.NotPermittedError when directory traversal.',
-    function (done) {
-      api.takeWebSnapshot(
-        testUrlHost + testUrlWithJSViewport,
-        {saveDir: '../../a'},
-        TEST_STORE_DIR,
-        (err: any, url, viewport) => {
-          assert(err.name === 'NotPermittedError')
-          done()
-        })
-    })
 })

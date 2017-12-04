@@ -1,11 +1,11 @@
 /* @flow */
-import {describe, it} from 'mocha'
+import { describe, it } from 'mocha'
 import assert from 'assert'
 import request from 'superagent'
 
 describe('utils', () => {
   const html = `<html><head></head><body>hello</body></html>`
-  const {createTmpServer} = require('../src/lib/utils')
+  const { createTmpServer } = require('../../src/lib/utils')
 
   it('return server', done => {
     createTmpServer(html, {}, (err, server) => {
@@ -25,7 +25,7 @@ describe('utils', () => {
   })
 
   it('can specify accept language', done => {
-    createTmpServer(html, {acceptLanguage: 'en'}, (err, server) => {
+    createTmpServer(html, { acceptLanguage: 'en' }, (err, server) => {
       if (err) {
         throw err
       }
@@ -41,14 +41,14 @@ describe('utils', () => {
     })
   })
 
-  const {getGoogleChromeBin} = require('../src/lib/utils')
+  const { getGoogleChromeBin } = require('../../src/lib/utils')
   it('return Google Chrome binary', function () {
     const chromeBinary = getGoogleChromeBin()
     const bin = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
     assert(chromeBinary, bin)
   })
 
-  const {runChromeBrowsers} = require('../src/lib/utils')
+  const { runChromeBrowsers } = require('../../src/lib/utils')
   it('run Google Chrome browser without ports', done => {
     runChromeBrowsers([], err => {
       assert(!err)
