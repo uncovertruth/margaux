@@ -19,7 +19,7 @@ before_install:
 - sh -e /etc/init.d/xvfb start
 - npm i -g flow-typed
 script:
-- flow-typed install
+- flow-typed install -s=true
 - npm run serve &
 - npm test
 after_success:
