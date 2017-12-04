@@ -1,6 +1,7 @@
 /* @flow */
 'use strict'
 import express from 'express'
+import type { Middleware } from 'express'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
 import path from 'path'
@@ -11,10 +12,10 @@ import {
   MOUNT_CHECK_CONTENT as mountCheckContent,
   CHROME_CHECK_URL as chromeCheckURL
 } from './const'
-import Raven, {warning} from './lib/logger'
+import Raven, { warning } from './lib/logger'
 import api from './api'
 
-const app = express()
+const app: Middleware = express()
 
 // uncomment after placing your favicon in /public
 // var favicon = require('serve-favicon');
@@ -24,7 +25,7 @@ app.use(morgan('combined'))
 
 app.use(Raven.requestHandler())
 
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(function (req, res, next) {
   res.contentType('application/json')
@@ -40,7 +41,7 @@ app.post('/', (req, res, next) => {
       err.status = 500
       return next(err)
     }
-    res.send({url: url, viewport: viewport})
+    res.send({ url: url, viewport: viewport })
   })
 })
 
@@ -51,7 +52,7 @@ app.get('/ping', (req, res, next) => {
       err.status = 500
       return next(err)
     }
-    res.send({result: mountCheckContent})
+    res.send({ result: mountCheckContent })
   })
 })
 
