@@ -177,15 +177,12 @@ Api.prototype.ping = function (
   if (!libPath.isFileExists(mountCheckFile)) {
     return callback(errors.NotFoundError(mountCheckFile + ' is not found.'))
   }
-  console.log('passed')
   libPath.readFile(mountCheckFile, (err, text) => {
     if (err) {
       err.status = 500
-      console.log('file1')
       return callback(errors.io.FileLoadError(err))
     }
     if (mountCheckContent.trim() !== text.trim()) {
-      console.log('file2')
       return callback(
         errors.io.FileLoadError(
           `get:${text} expected: ${mountCheckContent} of ${mountCheckFile}`
