@@ -11,7 +11,7 @@ import {
   MOUNT_CHECK_CONTENT as mountCheckContent,
   CHROME_CHECK_URL as chromeCheckURL
 } from './const'
-import Raven, {warning} from './lib/logger'
+import Raven, { warning } from './lib/logger'
 import api from './api'
 
 const app = express()
@@ -24,7 +24,7 @@ app.use(morgan('combined'))
 
 app.use(Raven.requestHandler())
 
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(function (req, res, next) {
   res.contentType('application/json')
@@ -35,13 +35,18 @@ app.post('/', (req, res, next) => {
   const url = req.body.url
   const opts = api.parseParameters(req.body)
 
-  api.takeWebSnapshot(url, opts, storeBaseDir, (err: any, url, viewport) => {
-    if (err) {
-      err.status = 500
-      return next(err)
+  api.takeWebSnapshot(
+    url,
+    opts,
+    storeBaseDir,
+    (err: any, snapshotUrl, viewport) => {
+      if (err) {
+        err.status = 500
+        return next(err)
+      }
+      res.send({ url: snapshotUrl, viewport, originalUrl: url })
     }
-    res.send({url: url, viewport: viewport})
-  })
+  )
 })
 
 app.get('/ping', (req, res, next) => {
@@ -51,7 +56,7 @@ app.get('/ping', (req, res, next) => {
       err.status = 500
       return next(err)
     }
-    res.send({result: mountCheckContent})
+    res.send({ result: mountCheckContent })
   })
 })
 

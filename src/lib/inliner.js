@@ -2,7 +2,7 @@
 'use strict'
 
 import Inliner from 'inliner'
-import {createTmpServer} from './utils'
+import { createTmpServer } from './utils'
 
 export default function (html: any, opts: any, callback: any) {
   createTmpServer(html, opts, (err, server) => {
@@ -12,6 +12,7 @@ export default function (html: any, opts: any, callback: any) {
 
     new Inliner(
       `http://localhost:${server.address().port}`,
+      { nosvg: true },
       (err, inlinedHtml) => {
         if (err) {
           return callback(err)
