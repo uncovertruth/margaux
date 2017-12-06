@@ -1,13 +1,12 @@
 /* @flow */
 'use strict'
 
-import {error} from './logger'
+import { error } from './logger'
 
 const CDP = require('chrome-remote-interface')
 const errors = require('common-errors')
 const u = require('url')
 const _ = require('lodash')
-const util = require('util')
 
 export function create (
   host: 'localhost' | string,
@@ -23,8 +22,8 @@ export function create (
       if (err) {
         return cb(err)
       }
-      CDP({host, port, tab}, async client => {
-        const {Page, DOM, Network} = client
+      CDP({ host, port, tab }, async client => {
+        const { Page, DOM, Network } = client
         try {
           await Page.enable() // Page の Event を察知するようにする
           await DOM.enable()
@@ -44,12 +43,12 @@ export function create (
 
 export function navigate (client: CDP, url: string, cb: () => void) {
   client.on('Page.loadEventFired', result => cb())
-  client.Page.navigate({url: url})
+  client.Page.navigate({ url: url })
 }
 
 export function setDeviceMetricsOver (
   client: CDP,
-  {width, height}: {width: number, height: number},
+  { width, height }: { width: number, height: number },
   cb: () => void
 ) {
   client.Page.setDeviceMetricsOverride(
@@ -60,7 +59,7 @@ export function setDeviceMetricsOver (
       mobile: false,
       fitWindow: false
     },
-    (err, {message}) => {
+    (err, { message }) => {
       if (err) {
         return error(err)
       }
@@ -71,14 +70,14 @@ export function setDeviceMetricsOver (
 
 export function setUserAgentOverride (
   client: CDP,
-  {userAgent}: {userAgent: string},
+  { userAgent }: { userAgent: string },
   cb: () => void
 ) {
   client.Network.setUserAgentOverride(
     {
       userAgent: userAgent
     },
-    (err, {message}) => {
+    (err, { message }) => {
       if (err) {
         return error(err)
       }
@@ -92,7 +91,7 @@ export function setHeaders (client: CDP, _headers: string, cb: () => void) {
     {
       headers: _headers // hash
     },
-    (err, {message}) => {
+    (err, { message }) => {
       if (err) {
         error(new Error(message))
       }
@@ -105,14 +104,14 @@ export function getOuterHTML (
   client: CDP,
   cb: (err: ?Error, outerHtml?: string) => void
 ) {
-  client.DOM.getDocument(null, (err, {message, root}) => {
+  client.DOM.getDocument(null, (err, { message, root }) => {
     if (err) {
       return cb(new Error(message))
     }
 
     client.DOM.getOuterHTML(
-      {nodeId: root.nodeId},
-      (err, {message, outerHTML}) => {
+      { nodeId: root.nodeId },
+      (err, { message, outerHTML }) => {
         if (err) {
           return cb(new Error(message))
         }
@@ -125,7 +124,7 @@ export function getOuterHTML (
 export function evaluate (
   client: CDP,
   expression: string,
-  cb: (err: ?Error, res: ?{message: string}) => void
+  cb: (err: ?Error, res: ?{ message: string }) => void
 ) {
   // XXX: expression の validate ができないか考える
   // const expression = 'setTimeout(window.close, 3 * 1000)';
@@ -142,83 +141,13 @@ export function evaluate (
   )
 }
 
-type CookieOptions = {
-  cookieName: string,
-  value: string | number,
-  expires: number
-}
-
-export function getCookies (
-  client: CDP,
-  opts: Object,
-  cb: (err: ?Error, res: ?{message: string}) => void
-) {
-  client.Network.getCookies((err, resp: {message: string}) => {
-    if (err) {
-      return cb(new Error(resp.message))
-    }
-    cb(null, resp)
-  })
-}
-
-export function setCookie (
-  client: CDP,
-  {cookieName, value, expires}: CookieOptions,
-  cb: (err: ?Error, res: ?{message: string}) => void
-) {
-  if (!cookieName) {
-    return cb(new errors.ArgumentNullError('cookieName'))
-  }
-  if (!value) {
-    return cb(new errors.ArgumentNullError('value'))
-  }
-
-  const formattedExpires = new Date(
-    new Date().getTime() + expires
-  ).toUTCString()
-
-  const expression = util.format(
-    'window.document.cookie = "%s=%s; expires=%s"',
-    cookieName,
-    value,
-    formattedExpires
-  )
-
-  evaluate(client, expression, (err, res: any) => {
-    if (err) {
-      return cb(res.message)
-    }
-    cb(null, res)
-  })
-}
-
-export function deleteCookie (
-  client: CDP,
-  opts: {cookieName: string, url: string},
-  cb: (err: ?Error, res: ?{message: string}) => void
-) {
-  if (!opts.cookieName) {
-    return cb(new errors.ArgumentNullError('cookieName'))
-  }
-  if (!opts.url) {
-    return cb(new errors.ArgumentNullError('url'))
-  }
-
-  client.Network.deleteCookie(opts, (err, resp) => {
-    if (err) {
-      return cb(new Error(resp.message))
-    }
-    cb(null, resp)
-  })
-}
-
 export function extractViewport (
   client: CDP,
   cb: (err: ?Error, res?: string) => void
 ) {
   // viewportのmetaタグはこの3つとcontentの中身（viewportの定義）しかattributeがないと信じている。
   const unnecessary = ['name', 'viewport', 'content']
-  client.DOM.getDocument(null, (err, {root, message}) => {
+  client.DOM.getDocument(null, (err, { root, message }) => {
     if (err) {
       return cb(new Error(message))
     }
@@ -227,7 +156,7 @@ export function extractViewport (
         nodeId: root.nodeId,
         selector: 'meta'
       },
-      (err, {nodeIds, message}) => {
+      (err, { nodeIds, message }) => {
         if (err) {
           return cb(new Error(message))
         }
@@ -239,7 +168,7 @@ export function extractViewport (
                 {
                   nodeId: nodeId
                 },
-                (err, {message, attributes}) => {
+                (err, { message, attributes }) => {
                   if (err) {
                     reject(new Error(message))
                   }
@@ -275,7 +204,7 @@ export function forceCharset (
   client: CDP,
   callback: (err: ?Error, data: any) => void
 ) {
-  client.DOM.getDocument(null, (err, {root, message}) => {
+  client.DOM.getDocument(null, (err, { root, message }) => {
     if (err) {
       return callback(new Error(message))
     }
@@ -284,7 +213,7 @@ export function forceCharset (
         nodeId: root.nodeId,
         selector: 'meta'
       },
-      (err, {nodeIds, message}) => {
+      (err, { nodeIds, message }) => {
         if (err) {
           return callback(new Error(message))
         }
@@ -296,7 +225,7 @@ export function forceCharset (
                 {
                   nodeId: nodeId
                 },
-                (err, {attributes, message}) => {
+                (err, { attributes, message }) => {
                   if (err) {
                     reject(new Error(message))
                   }
@@ -338,7 +267,7 @@ export function forceCharset (
                           name: 'content',
                           value: contentValue
                         },
-                        (err, {message}) => {
+                        (err, { message }) => {
                           if (err) {
                             reject(new Error(message))
                           }
@@ -361,7 +290,7 @@ export function forceCharset (
 }
 
 export function close (client: CDP, cb: (err: ?Error, res: string) => void) {
-  const {host, port, target} = client
+  const { host, port, target } = client
   CDP.Close(
     {
       host: host,
@@ -378,7 +307,7 @@ export function close (client: CDP, cb: (err: ?Error, res: string) => void) {
 }
 
 export function removeScripts (client: CDP, cb: (err: ?Error) => void) {
-  client.DOM.getDocument(null, (err, {root, message}) => {
+  client.DOM.getDocument(null, (err, { root, message }) => {
     if (err) {
       return cb(new Error(message))
     }
@@ -389,7 +318,7 @@ export function removeScripts (client: CDP, cb: (err: ?Error) => void) {
         nodeId: root.nodeId,
         selector: 'script'
       },
-      (err, {nodeIds, message}: {nodeIds: string[], message: string}) => {
+      (err, { nodeIds, message }: { nodeIds: string[], message: string }) => {
         if (err) {
           return cb(new Error(message))
         }
@@ -401,7 +330,7 @@ export function removeScripts (client: CDP, cb: (err: ?Error) => void) {
                 {
                   nodeId: nodeId
                 },
-                (err, {message}) => {
+                (err, { message }) => {
                   if (err) {
                     reject(new Error(message))
                   }
@@ -422,7 +351,7 @@ export function emptyIframes (
   client: CDP,
   cb: (err: ?Error, res: ?(string[])) => void
 ) {
-  client.DOM.getDocument(null, (err, {root, message}) => {
+  client.DOM.getDocument(null, (err, { root, message }) => {
     if (err) {
       return cb(new Error(message))
     }
@@ -432,7 +361,7 @@ export function emptyIframes (
         nodeId: root.nodeId,
         selector: 'iframe'
       },
-      (err, {nodeIds, message}) => {
+      (err, { nodeIds, message }) => {
         if (err) {
           return cb(new Error(message))
         }
@@ -446,7 +375,7 @@ export function emptyIframes (
                   name: 'src',
                   value: ''
                 },
-                (err, {message}) => {
+                (err, { message }) => {
                   if (err) {
                     reject(new Error(message))
                   }
@@ -465,16 +394,16 @@ export function emptyIframes (
 
 export function convertLinkToAbsolutely (
   client: CDP,
-  {baseURI, selector}: {baseURI: string, selector: string},
+  { baseURI, selector }: { baseURI: string, selector: string },
   cb: (err: ?Error) => void
 ) {
-  const attribute = {img: 'src', link: 'href'}[selector]
+  const attribute = { img: 'src', link: 'href' }[selector]
 
   if (!attribute) {
     return cb(new errors.ArgumentNullError(selector))
   }
 
-  client.DOM.getDocument(null, (err, {root, message}) => {
+  client.DOM.getDocument(null, (err, { root, message }) => {
     if (err) {
       return cb(new Error(message))
     }
@@ -484,7 +413,7 @@ export function convertLinkToAbsolutely (
         nodeId: root.nodeId,
         selector: selector
       },
-      (err, {nodeIds, message}) => {
+      (err, { nodeIds, message }) => {
         if (err) {
           return cb(new Error(message))
         }
@@ -493,8 +422,8 @@ export function convertLinkToAbsolutely (
           nodeIds.map(nodeId => {
             return new Promise((resolve, reject) => {
               client.DOM.getAttributes(
-                {nodeId: nodeId},
-                (err, {attributes, message}) => {
+                { nodeId: nodeId },
+                (err, { attributes, message }) => {
                   if (err) {
                     reject(new Error(message))
                   }

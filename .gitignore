@@ -1,13 +1,16 @@
+flow-typed/
 dist/
 tmp/
 flow-typed/
 
-### https://raw.github.com/github/gitignore/160d27e2bebf784c4f4a1e070df057f3868b62bc/Node.gitignore
+### https://raw.github.com/github/gitignore/7792e50daeaa6c07460484704671d1dc9f0045a7/Node.gitignore
 
 # Logs
 logs
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Runtime data
 pids
@@ -27,15 +30,21 @@ coverage
 # Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
 
+# Bower dependency directory (https://bower.io/)
+bower_components
+
 # node-waf configuration
 .lock-wscript
 
-# Compiled binary addons (http://nodejs.org/api/addons.html)
+# Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 
 # Dependency directories
-node_modules
-jspm_packages
+node_modules/
+jspm_packages/
+
+# Typescript v1 declaration files
+typings/
 
 # Optional npm cache directory
 .npm
@@ -51,3 +60,6 @@ jspm_packages
 
 # Yarn Integrity file
 .yarn-integrity
+
+# dotenv environment variables file
+.env

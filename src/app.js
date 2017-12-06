@@ -1,7 +1,6 @@
 /* @flow */
 'use strict'
 import express from 'express'
-import type { Middleware } from 'express'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
 import path from 'path'
@@ -15,7 +14,7 @@ import {
 import Raven, { warning } from './lib/logger'
 import api from './api'
 
-const app: Middleware = express()
+const app = express()
 
 // uncomment after placing your favicon in /public
 // var favicon = require('serve-favicon');
@@ -36,13 +35,18 @@ app.post('/', (req, res, next) => {
   const url = req.body.url
   const opts = api.parseParameters(req.body)
 
-  api.takeWebSnapshot(url, opts, storeBaseDir, (err: any, url, viewport) => {
-    if (err) {
-      err.status = 500
-      return next(err)
+  api.takeWebSnapshot(
+    url,
+    opts,
+    storeBaseDir,
+    (err: any, snapshotUrl, viewport) => {
+      if (err) {
+        err.status = 500
+        return next(err)
+      }
+      res.send({ url: snapshotUrl, viewport, originalUrl: url })
     }
-    res.send({ url: url, viewport: viewport })
-  })
+  )
 })
 
 app.get('/ping', (req, res, next) => {

@@ -5,8 +5,7 @@ import _ from 'lodash'
 import errors from 'common-errors'
 import path from 'path'
 import validator from 'validator'
-import promisify from 'es6-promisify'
-import co from 'co'
+import { promisify } from 'util'
 import uuid from 'uuid'
 
 import * as margaux from './lib/margaux'
@@ -29,7 +28,6 @@ const setHeaders = promisify(margaux.setHeaders)
 const navigate = promisify(margaux.navigate)
 const extractViewport = promisify(margaux.extractViewport)
 const forceCharset = promisify(margaux.forceCharset)
-const setCookie = promisify(margaux.setCookie)
 const convertLinkToAbsolutely = promisify(margaux.convertLinkToAbsolutely)
 const removeScripts = promisify(margaux.removeScripts)
 const emptyIframes = promisify(margaux.emptyIframes)
@@ -45,22 +43,19 @@ const wait = delay => {
 
 function Api () {}
 
-Api.prototype.parseParameters = function (params) {
+Api.prototype.parseParameters = function (params: Object) {
   return {
-    referer: params.referer || '',
     width: parseInt(params.width, 10) || DEFAULT_WIDTH,
     height: parseInt(params.height, 10) || DEFAULT_HEIGHT,
     waitTime: params.waitTime || DEFAULT_WAIT_TIME,
     userAgent: params.userAgent || USER_AGENT,
     acceptLanguage: params.acceptLanguage || 'ja', // 'ハイフン嫌なのでラクダで'
-    saveDir: params.saveDir || 'x', // project_id を想定
-    cookies: params.cookies || '' // 相手先サーバの文字エンコーディング(utf8,sjis,etc..)でURLエンコードずみのkey1=value1;key2=value2で送られてくる想定。
+    saveDir: params.saveDir || 'x' // project_id を想定
   }
 }
 
 type TakeWebSnapshotOptions = {
-  saveDir?: string,
-  cookies?: string
+  saveDir?: string
 }
 
 Api.prototype.takeWebSnapshot = function (
@@ -99,72 +94,49 @@ Api.prototype.takeWebSnapshot = function (
   const index = _.random(0, REMOTE_DEBUGGING_PORTS.length - 1)
   const port = REMOTE_DEBUGGING_PORTS[index]
   const waitTime = opts.waitTime || 1000
-
-  co(function * () {
+  ;(async function () {
     // create new chrome tab
-    const chrome = yield create(host, port)
+    const chrome = await create(host, port)
     const expression = `setTimeout(window.close, ${CLOSE_TAB_TIMEOUT})`
-    yield evaluate(chrome, expression)
+    await evaluate(chrome, expression)
 
     // set device and user angent
-    yield setDeviceMetricsOver(chrome, {
+    await setDeviceMetricsOver(chrome, {
       width: opts.width,
       height: opts.height
     })
-    yield setUserAgentOverride(chrome, { userAgent: opts.userAgent })
+    await setUserAgentOverride(chrome, { userAgent: opts.userAgent })
     const extraHeaders = {}
     if (opts.acceptLanguage) {
       extraHeaders['Accept-Language'] = opts.acceptLanguage
     }
-    if (opts.referer) {
-      // https://tools.ietf.org/html/rfc2616#section-14.36 rが1つ
-      extraHeaders['Referer'] = opts.referer
-    }
     if (Object.keys(extraHeaders).length > 0) {
-      yield setHeaders(chrome, extraHeaders)
+      await setHeaders(chrome, extraHeaders)
     }
 
     // start rendering and wait it finish.
-    yield navigate(chrome, url)
-    // Cookieが渡されていたら、一度ページをロードしてからcookieをセットして、再度ページをロードする
-    if (params.cookies) {
-      const cookies = params.cookies.split(';').map(x => {
-        return x.split('=')
-      })
-      cookies.forEach((cookie, idx, ar) => {
-        if (cookie.length !== 2) {
-          return cb(exports.ArgumentError(cookies))
-        }
-        // TODO yield ?
-        // console.log('set cookie');
-        setCookie(chrome, {
-          cookieName: cookie[0],
-          value: cookie[1]
-        })
-      })
-      yield navigate(chrome, url)
-    }
-    yield wait(waitTime)
+    await navigate(chrome, url)
+    await wait(waitTime)
 
-    const viewport = yield extractViewport(chrome)
+    const viewport = await extractViewport(chrome)
 
     // resolve img@src and link@href
-    yield convertLinkToAbsolutely(chrome, { baseURI: url, selector: 'img' })
-    yield convertLinkToAbsolutely(chrome, { baseURI: url, selector: 'link' })
+    await convertLinkToAbsolutely(chrome, { baseURI: url, selector: 'img' })
+    await convertLinkToAbsolutely(chrome, { baseURI: url, selector: 'link' })
 
     // get html and close chrome tab
-    yield removeScripts(chrome)
-    yield emptyIframes(chrome)
-    yield forceCharset(chrome)
-    const html = yield getOuterHTML(chrome)
-    yield close(chrome)
+    await removeScripts(chrome)
+    await emptyIframes(chrome)
+    await forceCharset(chrome)
+    const html = await getOuterHTML(chrome)
+    await close(chrome)
 
     // inlining html and save it.
-    const inlinedHtml = yield inline(html, { baseUrl: url })
-    yield saveFile(storePath, inlinedHtml)
+    const inlinedHtml = await inline(html, { baseUrl: url })
+    await saveFile(storePath, inlinedHtml)
 
     cb(null, uniquePath, viewport)
-  }).catch(cb)
+  })()
 }
 
 Api.prototype.ping = function (
@@ -190,20 +162,20 @@ Api.prototype.ping = function (
       )
     }
   })
+
   // chromeに接続できてるのもチェック
   const host = 'localhost'
   const index = _.random(0, REMOTE_DEBUGGING_PORTS.length - 1)
   const port = REMOTE_DEBUGGING_PORTS[index]
-  const waitTime = 1000
-  co(function * () {
-    const chrome = yield create(host, port)
-    yield navigate(chrome, chromeCheckURL)
-    wait(waitTime)
+  ;(async function () {
+    const chrome = await create(host, port)
+    await navigate(chrome, chromeCheckURL)
+    await wait(1000)
 
-    yield getOuterHTML(chrome)
-    yield close(chrome)
+    await getOuterHTML(chrome)
+    await close(chrome)
     callback()
-  }).catch(callback)
+  })()
 }
 
 export default new Api()
