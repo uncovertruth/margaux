@@ -1,6 +1,7 @@
 /* @flow */
 'use strict'
 import express from 'express'
+import type { Middleware } from 'express'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
 import path from 'path'
@@ -14,7 +15,7 @@ import {
 import Raven, { warning } from './lib/logger'
 import api from './api'
 
-const app = express()
+const app: Middleware = express()
 
 // uncomment after placing your favicon in /public
 // var favicon = require('serve-favicon');
