@@ -14,7 +14,6 @@ import {
 import Raven, { warning } from './lib/logger'
 import api from './api'
 
-// const app: Middleware = express()
 const app = express()
 
 // uncomment after placing your favicon in /public
