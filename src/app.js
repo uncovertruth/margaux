@@ -1,7 +1,6 @@
 /* @flow */
 'use strict'
 import express from 'express'
-import type { Middleware } from 'express'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
 import path from 'path'
@@ -15,7 +14,8 @@ import {
 import Raven, { warning } from './lib/logger'
 import api from './api'
 
-const app: Middleware = express()
+// const app: Middleware = express()
+const app = express()
 
 // uncomment after placing your favicon in /public
 // var favicon = require('serve-favicon');
@@ -27,12 +27,12 @@ app.use(Raven.requestHandler())
 
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.use(function (req, res, next) {
+app.use(function (req: $Request, res, next) {
   res.contentType('application/json')
   next()
 })
 
-app.post('/', (req, res, next) => {
+app.post('/', (req: express$Request, res, next) => {
   const url = req.body.url
   const opts = api.parseParameters(req.body)
 
@@ -50,7 +50,7 @@ app.post('/', (req, res, next) => {
   )
 })
 
-app.get('/ping', (req, res, next) => {
+app.get('/ping', (req: express$Request, res, next) => {
   const storePath = path.join(storeBaseDir, mountCheckFile)
   api.ping(storePath, mountCheckContent, chromeCheckURL, err => {
     if (err) {
@@ -62,7 +62,7 @@ app.get('/ping', (req, res, next) => {
 })
 
 // catch 404 and forward to error handler
-app.use((req, res, next) => {
+app.use((req: express$Request, res, next) => {
   const err: any = new Error('Not Found')
   err.status = 404
   warning(err)
@@ -71,7 +71,7 @@ app.use((req, res, next) => {
 
 app.use(Raven.errorHandler())
 
-app.use((err, req, res, next) => {
+app.use((err, req: express$Request, res, next) => {
   res.status(err.status || 500)
   res.send({
     message: err.message,
