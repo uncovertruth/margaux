@@ -14,7 +14,7 @@
     "chrome-remote-interface": "0.25.4",
     "cluster": "^0.7.7",
     "commander": "^2.12.2",
-    "common-errors": "^1.0.4",
+    "common-errors": "^1.0.5",
     "cross-env": "^5.1.1",
     "express": "^4.16.2",
     "inliner": "^1.13.1",
