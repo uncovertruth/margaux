@@ -13,7 +13,7 @@
     "body-parser": "^1.18.2",
     "chrome-remote-interface": "0.25.4",
     "cluster": "^0.7.7",
-    "commander": "^2.11.0",
+    "commander": "^2.12.2",
     "common-errors": "^1.0.4",
     "cross-env": "^5.1.1",
     "express": "^4.16.2",
