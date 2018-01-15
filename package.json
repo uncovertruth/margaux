@@ -66,6 +66,10 @@
       "prettier-eslint --write",
       "eslint",
       "git add"
+    ],
+    "*.md": [
+      "prettier --write",
+      "git add"
     ]
   },
   "main": "n/a",
@@ -82,10 +86,10 @@
     "lint": "run-p lint:*",
     "lint:es": "eslint . --cache",
     "lint:flow": "flow",
-    "postinstall": "npm run build",
     "prebuild": "npm run clean",
     "precommit": "lint-staged",
     "predev": "npm run build",
+    "prepare": "npm run build",
     "prestart": "npm run build",
     "start": "concurrently --kill-others 'npm run w:chrome' 'npm run w:cluster'",
     "test": "nyc mocha -- test",
