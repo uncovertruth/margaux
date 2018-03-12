@@ -15,7 +15,7 @@
     "cluster": "^0.7.7",
     "commander": "^2.14.1",
     "common-errors": "^1.0.5",
-    "cross-env": "^5.1.3",
+    "cross-env": "^5.1.4",
     "express": "^4.16.2",
     "inliner": "^1.13.1",
     "lodash": "^4.17.5",
