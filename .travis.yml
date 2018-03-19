@@ -1,9 +1,6 @@
 sudo: false
 addons:
- chrome: beta
- apt:
-    packages:
-      - xvfb
+ chrome: stable
 language: node_js
 node_js: stable
 cache:
@@ -14,13 +11,8 @@ env:
   matrix:
   - CMD=lint
   - CMD=test
-before_install:
-- export CHROME_BIN=chromium-browser
-- export DISPLAY=:99.0
-- sh -e /etc/init.d/xvfb start
-- sleep 5
 before_script:
-- chrome --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+- google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
 - npm start &
 - sleep 10
 script:
