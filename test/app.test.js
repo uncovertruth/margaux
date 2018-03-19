@@ -25,6 +25,8 @@ describe('POST /', function () {
   })
 
   it('returns 404 if request uri is not found', function (done) {
-    request(app).get('/not_found_uri').expect(404, done)
+    request(app)
+      .get('/not_found_uri')
+      .expect(404, done)
   })
 })

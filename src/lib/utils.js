@@ -31,7 +31,10 @@ export function emptyPorts (callback: any) {
 function listenOneAnyPorts (server, ports, callback) {
   // for promisify
   const _listen = (server, port, callback) => {
-    server.on('error', callback).on('listening', callback).listen(port)
+    server
+      .on('error', callback)
+      .on('listening', callback)
+      .listen(port)
   }
 
   co(function * () {
