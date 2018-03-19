@@ -1,6 +1,6 @@
 sudo: false
 addons:
- chrome: stable
+ chrome: beta
  apt:
     packages:
       - xvfb
@@ -20,6 +20,7 @@ before_install:
 - sh -e /etc/init.d/xvfb start
 - sleep 5
 before_script:
+- chrome --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
 - npm start &
 - sleep 10
 script:
