@@ -8,8 +8,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/uncovertruth/margaux/badge)](https://www.codefactor.io/repository/github/uncovertruth/margaux)
 [![codebeat badge](https://codebeat.co/badges/eb6850c8-8b85-420e-a76c-e4299849d33b)](https://codebeat.co/projects/github-com-uncovertruth-margaux-master)
 [![BCH compliance](https://bettercodehub.com/edge/badge/uncovertruth/margaux?branch=master)](https://bettercodehub.com/results/uncovertruth/margaux)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/4ef74a3120a14d6f86559ce95ee4d3ed)](https://www.codacy.com/app/USERDIVE/margaux?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=uncovertruth/margaux&amp;utm_campaign=Badge_Grade)
-[![Greenkeeper badge](https://badges.greenkeeper.io/uncovertruth/margaux.svg)](https://greenkeeper.io/)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/4ef74a3120a14d6f86559ce95ee4d3ed)](https://www.codacy.com/app/USERDIVE/margaux?utm_source=github.com&utm_medium=referral&utm_content=uncovertruth/margaux&utm_campaign=Badge_Grade)
 
 > create webpage snapshot
 
@@ -17,10 +16,10 @@ TODO: Fill out this long description.
 
 ## Table of Contents
 
-- [Install](#install)
-- [Usage](#usage)
-- [Contribute](#contribute)
-- [License](#license)
+* [Install](#install)
+* [Usage](#usage)
+* [Contribute](#contribute)
+* [License](#license)
 
 ## Install
 
