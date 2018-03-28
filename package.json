@@ -11,7 +11,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-flow": "^6.23.0",
     "body-parser": "^1.18.2",
-    "chrome-remote-interface": "0.25.5",
+    "chrome-remote-interface": "0.25.3",
     "cluster": "^0.7.7",
     "commander": "^2.12.2",
     "common-errors": "^1.0.5",
@@ -23,7 +23,7 @@
     "moment": "^2.21.0",
     "morgan": "^1.9.0",
     "portastic": "^1.0.1",
-    "raven": "^2.4.2",
+    "raven": "^2.2.1",
     "rimraf": "^2.6.2",
     "uuid": "^3.2.1",
     "validator": "^9.4.1"
