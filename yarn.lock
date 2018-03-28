@@ -1247,9 +1247,9 @@ chokidar@^1.6.1:
   optionalDependencies:
     fsevents "^1.0.0"
 
-chrome-remote-interface@0.25.4:
-  version "0.25.4"
-  resolved "https://registry.yarnpkg.com/chrome-remote-interface/-/chrome-remote-interface-0.25.4.tgz#3a84aa9ef053dc2fd25d3b4c30d7501cb5f73883"
+chrome-remote-interface@0.25.5:
+  version "0.25.5"
+  resolved "https://registry.yarnpkg.com/chrome-remote-interface/-/chrome-remote-interface-0.25.5.tgz#cfd3fb124bf5f2ea5a9d72037527c156822b1406"
   dependencies:
     commander "2.11.x"
     ws "3.3.x"
@@ -1395,6 +1395,10 @@ commander@2.6.0:
 commander@^2.11.0, commander@^2.14.1, commander@^2.8.1, commander@^2.9.0:
   version "2.14.1"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.14.1.tgz#2235123e37af8ca3c65df45b026dbd357b01b9aa"
+
+commander@^2.12.2:
+  version "2.15.1"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.15.1.tgz#df46e867d0fc2aec66a34662b406a9ccafff5b0f"
 
 common-errors@^1.0.5:
   version "1.0.5"
@@ -2202,7 +2206,7 @@ expect@^22.4.0:
     jest-message-util "^22.4.0"
     jest-regex-util "^22.1.0"
 
-express@^4.16.2:
+express@^4.16.3:
   version "4.16.3"
   resolved "https://registry.yarnpkg.com/express/-/express-4.16.3.tgz#6af8a502350db3246ecc4becf6b5a34d22f7ed53"
   dependencies:
