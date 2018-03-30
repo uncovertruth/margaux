@@ -17,8 +17,7 @@ before_install:
 - sh -e /etc/init.d/xvfb start
 - sleep 5
 before_script:
-- npm run w:cluster &
-- npm run w:chrome &
+- npm start &
 - sleep 10
 script:
 - npm run $CMD
