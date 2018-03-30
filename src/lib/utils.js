@@ -66,7 +66,9 @@ export function runChromeWithRemoteDebuggingPort (
     '--no-default-browser-check',
     '--no-first-run',
     '--disable-default-apps',
-    '--user-data-dir=' + os.tmpdir() + '/test.chrome' + remoteDebuggingPort
+    '--user-data-dir=' + os.tmpdir() + '/test.chrome' + remoteDebuggingPort,
+    '--headless',
+    '--disable-gpu'
   ]
 
   return callback(null, spawn(getGoogleChromeBin(), args))
