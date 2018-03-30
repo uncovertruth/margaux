@@ -18,7 +18,8 @@ before_install:
 - sleep 5
 before_script:
 - npm run w:cluster &
-- sleep 15
+- npm run w:chrome &
+- sleep 10
 script:
 - npm run $CMD
 after_success:
