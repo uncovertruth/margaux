@@ -1,6 +1,6 @@
 sudo: false
 addons:
-  chrome: beta
+  chrome: stable
 language: node_js
 node_js: stable
 cache:
@@ -18,7 +18,7 @@ before_install:
 - sleep 5
 before_script:
 - npm start &
-- sleep 10
+- sleep 15
 script:
 - npm run $CMD
 after_success:

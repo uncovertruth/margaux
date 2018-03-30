@@ -16,7 +16,7 @@ export function getGoogleChromeBin (): string {
   if (os.platform() === 'darwin') {
     return '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
   }
-  return 'google-chrome'
+  return 'google-chrome-stable'
 }
 
 export function emptyPorts (callback: any) {
