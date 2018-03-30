@@ -16,7 +16,7 @@ export function getGoogleChromeBin (): string {
   if (os.platform() === 'darwin') {
     return '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
   }
-  return 'google-chrome'
+  return 'google-chrome-stable'
 }
 
 export function emptyPorts (callback: any) {
@@ -31,7 +31,10 @@ export function emptyPorts (callback: any) {
 function listenOneAnyPorts (server, ports, callback) {
   // for promisify
   const _listen = (server, port, callback) => {
-    server.on('error', callback).on('listening', callback).listen(port)
+    server
+      .on('error', callback)
+      .on('listening', callback)
+      .listen(port)
   }
 
   co(function * () {
@@ -63,7 +66,10 @@ export function runChromeWithRemoteDebuggingPort (
     '--no-default-browser-check',
     '--no-first-run',
     '--disable-default-apps',
-    '--user-data-dir=' + os.tmpdir() + '/test.chrome' + remoteDebuggingPort
+    '--user-data-dir=' + os.tmpdir() + '/test.chrome' + remoteDebuggingPort,
+    '--headless',
+    '--disable-gpu',
+    '--no-sandbox'
   ]
 
   return callback(null, spawn(getGoogleChromeBin(), args))
