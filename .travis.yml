@@ -1,6 +1,6 @@
 sudo: false
 addons:
- chrome: beta
+ chrome: stable
 language: node_js
 node_js: stable
 cache:
@@ -16,9 +16,10 @@ before_install:
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
 - sleep 5
-script:
+before_script:
 - npm start &
 - sleep 10
+script:
 - npm run $CMD
 after_success:
 - '[ "${CMD}" == "test" ] && npm run codecov'
