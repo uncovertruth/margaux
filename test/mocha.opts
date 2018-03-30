@@ -3,3 +3,4 @@
 --perf-basic-prof
 --recursive
 --require babel-register
+--exit
