@@ -78,23 +78,23 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@uncovertruth/eslint-config-flowtype@4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@uncovertruth/eslint-config-flowtype/-/eslint-config-flowtype-4.0.0.tgz#4cdbf3ae73c1c135f753f704ea315b00e30d98ef"
+"@uncovertruth/eslint-config-flowtype@4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@uncovertruth/eslint-config-flowtype/-/eslint-config-flowtype-4.2.0.tgz#5a4ffc4d1bb4405dde82d2f83e64d70cc6979e5b"
   dependencies:
-    "@uncovertruth/eslint-config" "^4.0.0"
+    "@uncovertruth/eslint-config" "^4.2.0"
     babel-eslint "^8.2.2"
     eslint-plugin-flowtype "^2.46.1"
 
-"@uncovertruth/eslint-config@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@uncovertruth/eslint-config/-/eslint-config-4.0.0.tgz#4a1a61dcdb2ad0919d1fe48f81882d6bc1fcb4e1"
+"@uncovertruth/eslint-config@^4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@uncovertruth/eslint-config/-/eslint-config-4.2.0.tgz#be24586f4840239d837cf5d3fb64035db0739004"
   dependencies:
     eslint-config-standard "^11.0.0"
     eslint-plugin-eslint-comments "^2.0.2"
     eslint-plugin-import "^2.9.0"
     eslint-plugin-node "^6.0.1"
-    eslint-plugin-promise "^3.6.0"
+    eslint-plugin-promise "^3.7.0"
     eslint-plugin-standard "^3.0.1"
 
 abab@^1.0.4:
@@ -1976,7 +1976,7 @@ eslint-plugin-node@^6.0.1:
     resolve "^1.3.3"
     semver "^5.4.1"
 
-eslint-plugin-promise@^3.6.0:
+eslint-plugin-promise@^3.7.0:
   version "3.7.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-promise/-/eslint-plugin-promise-3.7.0.tgz#f4bde5c2c77cdd69557a8f69a24d1ad3cfc9e67e"
 
