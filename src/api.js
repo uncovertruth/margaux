@@ -140,10 +140,10 @@ Api.prototype.takeWebSnapshot = function (
 }
 
 Api.prototype.ping = function (
-  mountCheckFile,
-  mountCheckContent,
-  chromeCheckURL,
-  callback
+  mountCheckFile: string,
+  mountCheckContent: string,
+  chromeCheckURL: string,
+  callback: (...args: any[]) => void
 ) {
   // mountが外れていると嫌なのでチェック
   if (!libPath.isFileExists(mountCheckFile)) {
