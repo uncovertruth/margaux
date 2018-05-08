@@ -32,7 +32,7 @@
     "@uncovertruth/eslint-config-flowtype": "4.3.1",
     "babel-preset-power-assert": "2.0.0",
     "babel-register": "6.26.0",
-    "codecov": "3.0.0",
+    "codecov": "3.0.2",
     "concurrently": "3.5.1",
     "eslint": "4.19.1",
     "faker": "4.1.0",
