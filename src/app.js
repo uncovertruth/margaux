@@ -1,5 +1,8 @@
 /* @flow */
 'use strict'
+
+import { error } from './src/logger'
+
 import express from 'express'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
@@ -38,6 +41,7 @@ app.post('/', (req, res, next) => {
   api.takeWebSnapshot(url, opts, storeBaseDir, (err: any, url, viewport) => {
     if (err) {
       err.status = 500
+      error(err)
       return next(err)
     }
     res.send({url: url, viewport: viewport})
@@ -49,6 +53,7 @@ app.get('/ping', (req, res, next) => {
   api.ping(storePath, mountCheckContent, chromeCheckURL, (err) => {
     if (err) {
       err.status = 500
+      error(err)
       return next(err)
     }
     res.send({result: mountCheckContent})

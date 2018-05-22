@@ -1,6 +1,8 @@
 /* @flow */
 'use strict'
 
+import { error } from './src/logger'
+
 import _ from 'lodash'
 import errors from 'common-errors'
 import path from 'path'
@@ -67,6 +69,7 @@ Api.prototype.takeWebSnapshot = function (url: string, params: TakeWebSnapshotOp
   function generateKey () { return uuid.v4().replace(/-/g, '') };
 
   if (!validator.isURL(url)) {
+    error('Invalid url')
     return cb(new errors.ArgumentError('url'))
   }
 
@@ -80,11 +83,13 @@ Api.prototype.takeWebSnapshot = function (url: string, params: TakeWebSnapshotOp
     uniquePath = libPath.generateStorePath(opts.saveDir, generateKey())
     storePath = path.join(storeBaseDir, uniquePath)
     if (libPath.isFileExists(storePath)) {
+      error('Already in use')
       return cb(errors.AlreadyInUseError(storePath))
     }
   }
   // ディレクトリトラバーサル対策。プロジェクト横断は防げない（特に問題にはならないはず）
   if (storePath.indexOf(storeBaseDir) !== 0) {
+    error('Not permitted')
     return cb(errors.NotPermittedError(storePath))
   }
 
@@ -124,6 +129,7 @@ Api.prototype.takeWebSnapshot = function (url: string, params: TakeWebSnapshotOp
       const cookies = params.cookies.split(';').map((x) => { return x.split('=') })
       cookies.forEach((cookie, idx, ar) => {
         if (cookie.length !== 2) {
+          error('Invalid cookie')
           return cb(exports.ArgumentError(cookies))
         }
         // TODO yield ?
@@ -161,15 +167,18 @@ Api.prototype.takeWebSnapshot = function (url: string, params: TakeWebSnapshotOp
 Api.prototype.ping = function (mountCheckFile, mountCheckContent, chromeCheckURL, callback) {
   // mountが外れていると嫌なのでチェック
   if (!libPath.isFileExists(mountCheckFile)) {
+    error('Mount file does not exists')
     return callback(errors.NotFoundError(
       mountCheckFile + ' is not found.'))
   }
   libPath.readFile(mountCheckFile, (err, text) => {
     if (err) {
       err.status = 500
+      error('Failed to load file')
       return callback(errors.io.FileLoadError(err))
     }
     if (mountCheckContent.trim() !== text.trim()) {
+      error('Invalid file')
       return callback(errors.io.FileLoadError(`get:${text} expected: ${mountCheckContent} of ${mountCheckFile}`))
     }
   })

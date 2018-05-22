@@ -1,6 +1,8 @@
 /* @flow */
 'use strict'
 
+import { error } from './logger'
+
 import errors from 'common-errors'
 import fs from 'fs'
 import mkdirp from 'mkdirp'
@@ -16,6 +18,7 @@ export function generateStorePath (basePath: string, partialPath: string): strin
 
 export function saveFile (targetPath: string, html: any, callback: any): void {
   if (!html) {
+    error('Missing html')
     return callback(errors.ArgumentNullError())
   }
 
@@ -26,6 +29,7 @@ export function saveFile (targetPath: string, html: any, callback: any): void {
 
   fs.writeFile(targetPath, html, function (err) {
     if (err) {
+      error(err)
       return callback(err)
     }
     callback(null, targetPath)
@@ -39,10 +43,12 @@ export function readFile (targetPath: string, callback: any) {
 
   fs.readFile(targetPath, 'utf-8', function (err, text) {
     if (err) {
+      error(err)
       return callback(err)
     }
     if (!text) {
       // XXX: common-errors にマッチするエラーがあれば差し替える
+      error('Empty file')
       return callback(new Error('EmptyFile'))
     }
     callback(null, text)

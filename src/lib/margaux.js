@@ -82,11 +82,13 @@ export function setHeaders (client: CDP, _headers: string, cb: () => void) {
 export function getOuterHTML (client: CDP, cb: (err: ?Error, outerHtml?: string) => void) {
   client.DOM.getDocument(null, (err, {message, root}) => {
     if (err) {
+      error(message)
       return cb(new Error(message))
     }
 
     client.DOM.getOuterHTML({nodeId: root.nodeId}, (err, {message, outerHTML}) => {
       if (err) {
+        error(message)
         return cb(new Error(message))
       }
       cb(null, outerHTML)
@@ -101,6 +103,7 @@ export function evaluate (client: CDP, expression: string, cb: (err: ?Error, res
     'expression': expression
   }, (err, resp) => {
     if (err) {
+      error(resp.message)
       return cb(new Error(resp.message))
     }
     cb(null, resp)
@@ -116,6 +119,7 @@ type CookieOptions = {
 export function getCookies (client: CDP, opts: Object, cb: (err: ?Error, res: ?{message: string}) => void) {
   client.Network.getCookies((err, resp: {message: string}) => {
     if (err) {
+      error(resp.message)
       return cb(new Error(resp.message))
     }
     cb(null, resp)
@@ -124,9 +128,11 @@ export function getCookies (client: CDP, opts: Object, cb: (err: ?Error, res: ?{
 
 export function setCookie (client: CDP, {cookieName, value, expires}: CookieOptions, cb: (err: ?Error, res: ?{message: string}) => void) {
   if (!cookieName) {
+    error('Missing cookieName')
     return cb(new errors.ArgumentNullError('cookieName'))
   }
   if (!value) {
+    error('Missing value')
     return cb(new errors.ArgumentNullError('value'))
   }
 
@@ -143,6 +149,7 @@ export function setCookie (client: CDP, {cookieName, value, expires}: CookieOpti
 
   evaluate(client, expression, (err, res: any) => {
     if (err) {
+      error(res.message)
       return cb(res.message)
     }
     cb(null, res)
@@ -151,14 +158,17 @@ export function setCookie (client: CDP, {cookieName, value, expires}: CookieOpti
 
 export function deleteCookie (client: CDP, opts: {cookieName: string, url: string}, cb: (err: ?Error, res: ?{message: string}) => void) {
   if (!opts.cookieName) {
+    error('Missing cookieName')
     return cb(new errors.ArgumentNullError('cookieName'))
   }
   if (!opts.url) {
+    error('Missing url')
     return cb(new errors.ArgumentNullError('url'))
   }
 
   client.Network.deleteCookie(opts, (err, resp) => {
     if (err) {
+      error(resp.message)
       return cb(new Error(resp.message))
     }
     cb(null, resp)
@@ -170,6 +180,7 @@ export function extractViewport (client: CDP, cb: (err: ?Error, res?: string) =>
   const unnecessary = ['name', 'viewport', 'content']
   client.DOM.getDocument(null, (err, {root, message}) => {
     if (err) {
+      error(message)
       return cb(new Error(message))
     }
     client.DOM.querySelectorAll({
@@ -177,6 +188,7 @@ export function extractViewport (client: CDP, cb: (err: ?Error, res?: string) =>
       selector: 'meta'
     }, (err, {nodeIds, message}) => {
       if (err) {
+        error(message)
         return cb(new Error(message))
       }
 
@@ -186,6 +198,7 @@ export function extractViewport (client: CDP, cb: (err: ?Error, res?: string) =>
             nodeId: nodeId
           }, (err, {message, attributes}) => {
             if (err) {
+              error(message)
               reject(new Error(message))
             }
             const ar = attributes.map((x) => x.toLowerCase())
@@ -213,6 +226,7 @@ export function extractViewport (client: CDP, cb: (err: ?Error, res?: string) =>
 export function forceCharset (client: CDP, callback: (err: ?Error) => void) {
   client.DOM.getDocument(null, (err, {root, message}) => {
     if (err) {
+      error(message)
       return callback(new Error(message))
     }
     client.DOM.querySelectorAll({
@@ -220,6 +234,7 @@ export function forceCharset (client: CDP, callback: (err: ?Error) => void) {
       selector: 'meta'
     }, (err, {nodeIds, message}) => {
       if (err) {
+        error(message)
         return callback(new Error(message))
       }
 
@@ -229,6 +244,7 @@ export function forceCharset (client: CDP, callback: (err: ?Error) => void) {
             nodeId: nodeId
           }, (err, {attributes, message}) => {
             if (err) {
+              error(message)
               reject(new Error(message))
             }
             const ar = attributes.map((x) => x.toLowerCase())
@@ -239,6 +255,7 @@ export function forceCharset (client: CDP, callback: (err: ?Error) => void) {
                 value: 'UTF-8'
               }, (err, resp) => {
                 if (err) {
+                  error(resp.message)
                   reject(new Error(resp.message))
                 }
                 resolve()
@@ -254,6 +271,7 @@ export function forceCharset (client: CDP, callback: (err: ?Error) => void) {
                   value: contentValue
                 }, (err, {message}) => {
                   if (err) {
+                    error(message)
                     reject(new Error(message))
                   }
                   resolve()
@@ -287,6 +305,7 @@ export function close (client: CDP, cb: (err: ?Error, res: string) => void) {
 export function removeScripts (client: CDP, cb: (err: ?Error) => void) {
   client.DOM.getDocument(null, (err, {root, message}) => {
     if (err) {
+      error(err)
       return cb(new Error(message))
     }
 
@@ -296,6 +315,7 @@ export function removeScripts (client: CDP, cb: (err: ?Error) => void) {
       selector: 'script'
     }, (err, {nodeIds, message}: {nodeIds: string[], message: string}) => {
       if (err) {
+        error(message)
         return cb(new Error(message))
       }
 
@@ -306,6 +326,7 @@ export function removeScripts (client: CDP, cb: (err: ?Error) => void) {
               nodeId: nodeId
             }, (err, {message}) => {
               if (err) {
+                error(message)
                 reject(new Error(message))
               }
               resolve()
@@ -322,6 +343,7 @@ export function removeScripts (client: CDP, cb: (err: ?Error) => void) {
 export function emptyIframes (client: CDP, cb: (err: ?Error, res: ?string[]) => void) {
   client.DOM.getDocument(null, (err, {root, message}) => {
     if (err) {
+      error(message)
       return cb(new Error(message))
     }
 
@@ -330,6 +352,7 @@ export function emptyIframes (client: CDP, cb: (err: ?Error, res: ?string[]) => 
       selector: 'iframe'
     }, (err, {nodeIds, message}) => {
       if (err) {
+        error(message)
         return cb(new Error(message))
       }
 
@@ -342,6 +365,7 @@ export function emptyIframes (client: CDP, cb: (err: ?Error, res: ?string[]) => 
               value: ''
             }, (err, {message}) => {
               if (err) {
+                error(message)
                 reject(new Error(message))
               }
               resolve()
@@ -364,6 +388,7 @@ export function convertLinkToAbsolutely (client: CDP, {baseURI, selector}: {base
 
   client.DOM.getDocument(null, (err, {root, message}) => {
     if (err) {
+      error(message)
       return cb(new Error(message))
     }
 
@@ -372,6 +397,7 @@ export function convertLinkToAbsolutely (client: CDP, {baseURI, selector}: {base
       selector: selector
     }, (err, {nodeIds, message}) => {
       if (err) {
+        error(message)
         return cb(new Error(message))
       }
 
@@ -379,6 +405,7 @@ export function convertLinkToAbsolutely (client: CDP, {baseURI, selector}: {base
         return new Promise((resolve, reject) => {
           client.DOM.getAttributes({nodeId: nodeId}, (err, {attributes, message}) => {
             if (err) {
+              error(message)
               reject(new Error(message))
             }
             const index = attributes.indexOf(attribute)
@@ -392,6 +419,7 @@ export function convertLinkToAbsolutely (client: CDP, {baseURI, selector}: {base
               value: u.resolve(baseURI, value)
             }, function (err, resp) {
               if (err) {
+                error(resp)
                 reject(new Error(resp))
               }
               resolve()

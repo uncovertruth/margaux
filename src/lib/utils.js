@@ -51,6 +51,7 @@ function listenOneAnyPorts (server, ports, callback) {
       }
     }
     // 指定された ports すべてが利用できなかった場合はエラー
+    error('All ports are used')
     callback(new Error('all ports are used'))
   })
 }
@@ -73,6 +74,7 @@ export function runChromeBrowsers (ports: number[] = REMOTE_DEBUGGING_PORTS, cb:
     queue.push(new Promise((resolve, reject) => {
       runChromeWithRemoteDebuggingPort(port, (err, result) => {
         if (err) {
+          error(err)
           return reject(err)
         }
         resolve()
@@ -89,6 +91,7 @@ export function runChromeBrowsers (ports: number[] = REMOTE_DEBUGGING_PORTS, cb:
 export function createTmpServer (html: string, opts: {acceptLanguage?: string}, cb: (err: ?Error, server: any) => void) {
   emptyPorts((err, ports) => {
     if (err) {
+      error(err)
       return cb(err)
     }
 
@@ -104,6 +107,7 @@ export function createTmpServer (html: string, opts: {acceptLanguage?: string}, 
 
     listenOneAnyPorts(server, ports, (err: null | Error, port: void) => {
       if (err) {
+        error(err)
         return cb(err)
       }
       cb(null, server)
