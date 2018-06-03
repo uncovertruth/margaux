@@ -26,7 +26,7 @@
     "raven": "2.6.2",
     "rimraf": "2.6.2",
     "uuid": "3.2.1",
-    "validator": "10.2.0"
+    "validator": "10.3.0"
   },
   "devDependencies": {
     "@uncovertruth/eslint-config-flowtype": "4.3.1",
