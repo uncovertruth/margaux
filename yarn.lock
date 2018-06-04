@@ -84,9 +84,9 @@
   dependencies:
     any-observable "^0.3.0"
 
-"@uncovertruth/eslint-config-flowtype@4.3.1":
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/@uncovertruth/eslint-config-flowtype/-/eslint-config-flowtype-4.3.1.tgz#0781e36cb73842d2373f6713cf92ce477c5d9723"
+"@uncovertruth/eslint-config-flowtype@4.3.2":
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/@uncovertruth/eslint-config-flowtype/-/eslint-config-flowtype-4.3.2.tgz#2a981b14b67572cd101dadb45bf1ad680c6a9cfc"
   dependencies:
     "@uncovertruth/eslint-config" "^4.2.0"
     babel-eslint "^8.2.2"
