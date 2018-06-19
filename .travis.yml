@@ -20,6 +20,7 @@ before_script:
 - npm start &
 - sleep 10
 script:
+- export NODE_WEBSNAPSHOT_NUM_BROWSER=1
 - npm run $CMD
 after_success:
 - '[ "${CMD}" == "test" ] && npm run codecov'
