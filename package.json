@@ -11,7 +11,7 @@
     "babel-preset-env": "1.7.0",
     "babel-preset-flow": "6.23.0",
     "body-parser": "1.18.3",
-    "chrome-remote-interface": "0.25.5",
+    "chrome-remote-interface": "0.24.4",
     "cluster": "0.7.7",
     "commander": "2.15.1",
     "common-errors": "1.0.5",
