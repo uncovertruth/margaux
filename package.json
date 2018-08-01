@@ -29,7 +29,7 @@
     "validator": "10.4.0"
   },
   "devDependencies": {
-    "@uncovertruth/eslint-config-flowtype": "4.4.0",
+    "@uncovertruth/eslint-config-flowtype": "4.5.0",
     "babel-preset-power-assert": "2.0.0",
     "babel-register": "6.26.0",
     "codecov": "3.0.4",
