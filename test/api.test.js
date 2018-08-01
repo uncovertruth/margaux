@@ -178,7 +178,7 @@ describe('api', function () {
         assert(err === null)
         assert(url.length > 0)
         assert(fs.existsSync(`${path.join(TEST_STORE_DIR, url)}`))
-        assert.equal(viewport, 'width=device-width,initial-scale=1.0')
+        assert.strictEqual(viewport, 'width=device-width,initial-scale=1.0')
         done()
       }
     )
