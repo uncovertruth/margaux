@@ -23,7 +23,7 @@
     "moment": "2.22.2",
     "morgan": "1.9.0",
     "portastic": "1.0.1",
-    "raven": "2.6.3",
+    "raven": "2.6.4",
     "rimraf": "2.6.2",
     "uuid": "3.3.2",
     "validator": "10.7.1"
