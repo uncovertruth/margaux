@@ -8,5 +8,11 @@
   },
   "devDependencies": {
     "automerge": true
-  }
+  },
+  "packageRules": [
+    {
+      "packagePatterns": ["^inliner"],
+      "enabled": false
+    }
+  ]
 }
