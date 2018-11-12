@@ -4,7 +4,7 @@ addons:
 language: node_js
 node_js: stable
 cache:
-  yarn: false
+  yarn: true
   directories:
   - node_modules
 env:
