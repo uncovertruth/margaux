@@ -46,7 +46,7 @@
     "power-assert": "1.6.1",
     "prettier-eslint-cli": "4.7.1",
     "remove": "0.1.5",
-    "superagent": "5.0.2",
+    "superagent": "5.0.4",
     "supertest": "4.0.2"
   },
   "directories": {
