@@ -16,7 +16,7 @@
     "commander": "2.20.0",
     "common-errors": "1.0.5",
     "cross-env": "5.2.0",
-    "express": "4.16.4",
+    "express": "4.17.0",
     "inliner": "uncovertruth/inliner#feature/preserve_media_query_with_version",
     "lodash": "4.17.11",
     "mkdirp": "0.5.1",
